@@ -1,71 +1,71 @@
 # Account Recovery Assistant
 
-Account Recovery Assistant is a guided service for people who lost access to accounts, got stuck in multi-factor authentication, forgot passwords or recovery details, and need a clear, safe recovery path.
+Account Recovery Assistant is a safe guide for people who lost access to an account, got stuck in multi-factor authentication, forgot recovery details, or need help using official recovery channels.
 
-## Идея простыми словами
+## Simple Description
 
-Это помощник по восстановлению аккаунтов. Он не взламывает и не обходит защиту, а помогает законному владельцу разобраться в бюрократии: какие шаги пройти, какие данные подготовить, куда писать, как доказать владение и как не усугубить ситуацию.
+This is an account recovery helper. It does not hack accounts or bypass security. It helps the rightful owner understand what happened, collect proof, choose the right official process, and avoid mistakes that make recovery harder.
 
-## Подробное описание
+## Full Description
 
-Люди часто теряют доступ к почте, соцсетям, банковским, рабочим, игровым и облачным аккаунтам. Причины типовые: забытый пароль, потерянный телефон с 2FA, смена номера, сломанный authenticator, утерянные backup codes, подозрительная активность, блокировка аккаунта, смерть владельца, корпоративные переходы, старые email-адреса.
+People lose access to email, social media, banking, work, gaming, domain, and cloud accounts. Common causes include forgotten passwords, lost phones, broken authenticator apps, changed phone numbers, missing backup codes, suspicious activity locks, old recovery emails, and business admin turnover.
 
-Официальные процедуры восстановления часто запутаны. Пользователь не понимает, какие данные нужны, почему форма отклонена, что можно делать безопасно, а какие действия похожи на попытку захвата аккаунта. Account Recovery Assistant превращает восстановление в пошаговый процесс: определить сервис и тип потери доступа, собрать доказательства владения, выбрать официальный канал восстановления, подготовить сообщения в поддержку, отслеживать статус и подсказать профилактику после восстановления.
+Official recovery flows are often confusing. Users do not know what information is required, why forms are rejected, or which actions look suspicious. Account Recovery Assistant turns recovery into a guided process: identify the account and failure type, collect ownership evidence, find the official recovery channel, prepare support messages, track attempts, and harden the account after access is restored.
 
-## Принцип безопасности
+## Safety Principle
 
-Продукт должен помогать только законному владельцу или уполномоченному представителю. Он не должен предоставлять инструкции по обходу MFA, фишингу, социальной инженерии, подбору паролей, взлому устройств или перехвату сессий. Все рекомендации должны вести через официальные процедуры сервисов.
+The product must only help the rightful owner or an authorized representative. It must not provide instructions for bypassing MFA, phishing, social engineering, password cracking, device hacking, or session theft. All guidance must use official service procedures.
 
-## Основные сценарии
+## Main Use Cases
 
-- Пользователь потерял телефон с authenticator app.
-- Пользователь сменил номер и не может получить SMS-код.
-- Пользователь забыл пароль и не имеет доступа к резервной почте.
-- Аккаунт заблокирован после подозрительной активности.
-- Нужно восстановить доступ к аккаунтам умершего родственника через официальные процедуры.
-- Малый бизнес потерял доступ к рекламному, доменному или облачному аккаунту.
+- A user lost a phone with an authenticator app.
+- A user changed phone numbers and cannot receive SMS codes.
+- A user forgot a password and lost access to the recovery email.
+- An account is locked after suspicious activity.
+- A family member needs to recover an account through official estate procedures.
+- A small business lost access to an ad, domain, or cloud account.
 
 ## MVP
 
-- Диагностический опрос: какой сервис, какой доступ потерян, что еще доступно.
-- Пошаговый чеклист восстановления.
-- База официальных ссылок на recovery-процедуры популярных сервисов.
-- Генератор аккуратного обращения в поддержку.
-- Список документов и доказательств, которые стоит подготовить.
-- План защиты после восстановления: backup codes, passkeys, резервные контакты.
+- Diagnostic questionnaire
+- Step-by-step recovery checklist
+- Database of official recovery links for popular services
+- Support message generator
+- List of documents and proof to prepare
+- Post-recovery security checklist: backup codes, passkeys, recovery contacts, and password manager setup
 
-## Похожие проекты и отличие
+## Similar Projects And Difference
 
-- Passware, Lazesoft, Ophcrack, John the Ripper: помогают восстанавливать или подбирать пароли к устройствам, файлам и локальным системам. Отличие Account Recovery Assistant - не взлом и не brute force, а навигация по официальным процедурам восстановления аккаунтов.
-- Password managers: помогают не терять доступ в будущем, но плохо решают ситуацию, когда доступ уже потерян, MFA сломан, номер сменился или поддержка отклоняет заявки.
-- Официальные help centers Google, Apple, Meta, Microsoft, banks and SaaS: содержат правильные процедуры, но они разбросаны, сложны и не объясняют пользователю стратегию восстановления.
-- IT support/MSP: могут помогать бизнесу вручную. Отличие - продуктовый guided workflow, checklist, evidence collection and support-message generator.
-- Dark-pattern “account recovery” сервисы и хакерские услуги: опасная противоположность. Account Recovery Assistant должен вести только через законные каналы и явно запрещать обход MFA, фишинг, social engineering and unauthorized access.
+- Passware, Lazesoft, Ophcrack, and John the Ripper recover or crack passwords for files, devices, and local systems. Account Recovery Assistant is different: it does not crack passwords. It guides users through official account recovery.
+- Password managers help prevent future loss, but they do not solve the full recovery situation once MFA, phone access, or support workflows fail.
+- Official help centers from Google, Apple, Meta, Microsoft, banks, and SaaS products contain the correct procedures, but they are scattered and hard to navigate.
+- IT support and managed service providers can help businesses manually. This project turns that help into a guided workflow with evidence collection and message templates.
+- Shady “account recovery” services and hacking offers are the opposite of this project. Account Recovery Assistant must stay legal, safe, and owner-only.
 
-Главное отличие проекта - безопасный навигатор по восстановлению законного доступа: понять ситуацию, собрать доказательства, выбрать официальный канал, написать поддержку и защитить аккаунт после возврата.
+The main difference is safe navigation: understand the situation, collect proof, use official channels, and protect the account after recovery.
 
-## Ценность
+## Value
 
-- Меньше паники и хаоса.
-- Меньше ошибочных действий, из-за которых аккаунт блокируется сильнее.
-- Быстрее сбор нужных доказательств.
-- Понятная навигация по официальным процедурам.
-- Профилактика повторной потери доступа.
+- Less panic and confusion
+- Fewer mistakes that make recovery harder
+- Faster evidence collection
+- Clear navigation through official procedures
+- Better prevention after recovery
 
-## Риски
+## Risks
 
-- Нужно жестко отделять помощь владельцу от инструкций для злоумышленника.
-- Процедуры сервисов часто меняются, базу нужно обновлять.
-- Нельзя обещать гарантированное восстановление.
-- Для финансовых и корпоративных аккаунтов могут требоваться юридические процедуры.
+- The product must clearly separate owner recovery from attacker guidance.
+- Recovery procedures change often and the knowledge base must stay current.
+- It cannot promise guaranteed recovery.
+- Financial, corporate, and estate cases may need legal or administrative procedures.
 
-## Монетизация
+## Monetization
 
-- Бесплатная базовая диагностика.
-- Платные подробные recovery-планы.
-- Подписка для малого бизнеса: inventory аккаунтов, backup recovery plan, регулярные проверки.
-- Партнерства с IT-поддержкой, юристами и MSP.
+- Free basic diagnosis
+- Paid detailed recovery plans
+- Small business subscription for account inventory and recovery planning
+- Partnerships with IT support, legal services, and managed service providers
 
-## Документы
+## Documents
 
 See [roadmap.md](roadmap.md).

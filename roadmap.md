@@ -2,36 +2,36 @@
 
 ## Phase 1: Safety Policy
 
-- Зафиксировать допустимые сценарии: помощь владельцу, наследнику или администратору.
-- Запретить любые инструкции по обходу защиты, взлому, фишингу и социальной инженерии.
-- Добавить явные предупреждения, что восстановление идет только через официальные каналы.
-- Описать escalation flow для финансовых, корпоративных и наследственных случаев.
+- Define allowed scenarios: owner, estate representative, business admin, or authorized helper.
+- Ban bypass, hacking, phishing, social engineering, and unauthorized access guidance.
+- Add clear warnings that recovery must use official channels.
+- Define escalation paths for financial, business, and estate cases.
 
 ## Phase 2: Recovery Taxonomy
 
-- Составить классификацию проблем: password loss, MFA loss, phone loss, email loss, account lock, compromised account, deceased owner, business admin loss.
-- Для каждого типа определить доступные доказательства владения.
-- Для каждого типа определить типовые ошибки пользователя.
-- Создать универсальный диагностический опрос.
+- Classify problems: password loss, MFA loss, phone loss, email loss, account lock, compromised account, deceased owner, and business admin loss.
+- Define ownership evidence for each problem type.
+- Define common user mistakes for each type.
+- Build a universal diagnostic questionnaire.
 
 ## Phase 3: Knowledge Base
 
-- Собрать официальные recovery-ссылки для популярных сервисов.
-- Хранить дату последней проверки каждой процедуры.
-- Структурировать требования: документы, backup codes, device history, billing data, domain ownership.
-- Добавить мониторинг устаревших инструкций.
+- Collect official recovery links for popular services.
+- Store the last verification date for each procedure.
+- Structure requirements: documents, backup codes, device history, billing data, domain ownership, and identity checks.
+- Add monitoring for outdated instructions.
 
 ## Phase 4: Guided Assistant
 
-- Реализовать мастер восстановления.
-- Генерировать чеклист действий.
-- Генерировать шаблон письма в поддержку.
-- Вести журнал попыток и статусов.
-- Давать post-recovery hardening checklist.
+- Build the recovery wizard.
+- Generate action checklists.
+- Generate support message templates.
+- Track attempts and status.
+- Provide a post-recovery hardening checklist.
 
 ## Phase 5: Validation
 
-- Проверить продукт на безопасных тестовых сценариях.
-- Провести интервью с пользователями, которые реально теряли доступ.
-- Проверить юридические ограничения по странам и типам аккаунтов.
-- Оценить B2B-спрос у малого бизнеса и IT-поддержки.
+- Test on safe simulated recovery scenarios.
+- Interview users who actually lost account access.
+- Check legal limits by country and account type.
+- Evaluate B2B demand from small businesses and IT support teams.
