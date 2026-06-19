@@ -2,5 +2,6 @@
   "service": "Microsoft",
   "account_state": "locked_suspicious_activity",
   "still_knows_password": false,
-  "role": "owner"
+  "role": "owner",
+  "account_scope": "tenant"
 }

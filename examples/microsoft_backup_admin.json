@@ -6,5 +6,6 @@
   "has_billing_access": true,
   "domain_control": true,
   "role": "owner",
-  "still_knows_password": false
+  "still_knows_password": false,
+  "account_scope": "tenant"
 }

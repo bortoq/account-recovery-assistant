@@ -69,6 +69,7 @@ def test_plan_endpoint_uses_incident_case_type_when_incident_id_is_explicit():
         "incident_id": "microsoft_admin_lockout",
         "service": "Microsoft",
         "role": "owner",
+        "account_scope": "tenant",
         "has_backup_admin": False,
         "has_billing_access": False,
         "domain_control": True,
@@ -115,3 +116,52 @@ def test_static_app_exposes_markdown_export_and_local_feedback_controls():
     assert "feedback-stuck" in app_js
     assert "feedback-link-worked" in app_js
     assert "feedback-link-failed" in app_js
+
+
+def test_markdown_endpoint_returns_backend_report():
+    payload = {
+        "incident_id": "gmail_mfa_loss",
+        "service": "Google",
+        "role": "owner",
+        "still_knows_password": True,
+        "has_backup_codes": True,
+        "has_recovery_email": True,
+        "has_trusted_device": False,
+    }
+
+    response = dispatch_request("POST", "/api/plan/markdown", body=json.dumps(payload).encode("utf-8"))
+    markdown = response["body"].decode("utf-8")
+
+    assert response["status"] == 200
+    assert response["headers"]["Content-Type"] == "text/markdown; charset=utf-8"
+    assert markdown.startswith("# Account Recovery Plan")
+    assert "## Knowledge Freshness" in markdown
+    assert "## Source Notes" in markdown
+
+
+def test_feedback_endpoint_requires_consent_and_accepts_minimal_feedback():
+    without_consent = dispatch_request(
+        "POST",
+        "/api/feedback",
+        body=json.dumps({"outcome": "recovered", "link_status": "worked"}).encode("utf-8"),
+    )
+    assert without_consent["status"] == 400
+
+    accepted = dispatch_request(
+        "POST",
+        "/api/feedback",
+        body=json.dumps(
+            {
+                "consent": True,
+                "incident_id": "gmail_mfa_loss",
+                "decision_path_id": "backup_codes_available",
+                "outcome": "recovered",
+                "link_status": "worked",
+            }
+        ).encode("utf-8"),
+    )
+    payload = json.loads(accepted["body"].decode("utf-8"))
+
+    assert accepted["status"] == 200
+    assert payload["accepted"] is True
+    assert payload["stored"] == "memory_only"

@@ -170,3 +170,57 @@ a {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.progress {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fffdf8;
+  margin: 8px 0 16px;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.consent {
+  display: block;
+  margin: 8px 0 12px;
+  color: var(--muted);
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .hero,
+  #status,
+  .actions,
+  .progress,
+  .warning,
+  .consent {
+    display: none !important;
+  }
+
+  #app {
+    max-width: none;
+    padding: 0;
+  }
+
+  .panel,
+  .stack > section,
+  .plan-section {
+    border: 0;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+  }
+}

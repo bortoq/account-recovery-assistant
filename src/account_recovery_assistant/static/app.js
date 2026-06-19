@@ -1,5 +1,7 @@
 const statusNode = document.querySelector("#status");
 const wizardNode = document.querySelector("#wizard");
+let currentPlanPayload = null;
+let currentPlan = null;
 
 async function fetchJson(path, options = {}) {
   const response = await fetch(path, options);
@@ -11,6 +13,15 @@ async function fetchJson(path, options = {}) {
     throw error;
   }
   return payload;
+}
+
+async function fetchText(path, options = {}) {
+  const response = await fetch(path, options);
+  const body = await response.text();
+  if (!response.ok) {
+    throw new Error(body || `Request failed: ${response.status}`);
+  }
+  return body;
 }
 
 function escapeHtml(value) {
@@ -217,6 +228,20 @@ function downloadText(filename, text) {
   URL.revokeObjectURL(url);
 }
 
+async function downloadMarkdownFromServer() {
+  const payload = currentPlanPayload;
+  if (!payload) {
+    downloadText("account-recovery-plan.md", planToMarkdown(currentPlan));
+    return;
+  }
+  const markdown = await fetchText("/api/plan/markdown", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  downloadText("account-recovery-plan.md", markdown);
+}
+
 async function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) {
     await navigator.clipboard.writeText(text);
@@ -257,6 +282,8 @@ function renderPlan(plan) {
     <section class="stack">
       ${warning}
       <section class="plan-section">
+        <p class="muted">Step 3 of 3 · recovery plan ready.</p>
+        <div class="progress" aria-label="Wizard progress"><span style="width: 100%"></span></div>
         <h2>${escapeHtml(plan.incident_title || "Recovery Plan")}</h2>
         <p class="muted">${escapeHtml(plan.service)} · ${escapeHtml(plan.case_type)}</p>
       </section>
@@ -315,7 +342,8 @@ function renderPlan(plan) {
       </section>
       <section class="plan-section">
         <h3>Feedback</h3>
-        <p class="muted">No feedback is sent anywhere in this local alpha; these buttons only help you track your outcome during the session.</p>
+        <p class="muted">Optional: send minimal, memory-only feedback to this local server for the current session. Do not include personal details.</p>
+        <label class="consent"><input type="checkbox" id="feedback-consent"> I consent to share this minimal outcome for this local session.</label>
         <div class="actions">
           <button type="button" id="feedback-recovered">I recovered access</button>
           <button type="button" id="feedback-stuck">I'm still stuck</button>
@@ -335,21 +363,18 @@ function renderPlan(plan) {
     await copyText(plan.support_message);
     statusNode.textContent = "Support message copied.";
   });
-  wizardNode.querySelector("#download-markdown").addEventListener("click", () => {
-    downloadText("account-recovery-plan.md", planToMarkdown(plan));
+  wizardNode.querySelector("#download-markdown").addEventListener("click", async () => {
+    try {
+      await downloadMarkdownFromServer();
+    } catch (error) {
+      downloadText("account-recovery-plan.md", planToMarkdown(plan));
+      statusNode.textContent = "Downloaded fallback Markdown from the browser.";
+    }
   });
-  wizardNode.querySelector("#feedback-recovered").addEventListener("click", () => {
-    statusNode.textContent = "Feedback noted locally: access recovered.";
-  });
-  wizardNode.querySelector("#feedback-stuck").addEventListener("click", () => {
-    statusNode.textContent = "Feedback noted locally: still stuck. Re-check official links and escalation triggers.";
-  });
-  wizardNode.querySelector("#feedback-link-worked").addEventListener("click", () => {
-    statusNode.textContent = "Feedback noted locally: official link worked.";
-  });
-  wizardNode.querySelector("#feedback-link-failed").addEventListener("click", () => {
-    statusNode.textContent = "Feedback noted locally: official link did not work. Re-check the provider help center.";
-  });
+  wizardNode.querySelector("#feedback-recovered").addEventListener("click", () => submitFeedback("recovered", "not_used"));
+  wizardNode.querySelector("#feedback-stuck").addEventListener("click", () => submitFeedback("stuck", "not_used"));
+  wizardNode.querySelector("#feedback-link-worked").addEventListener("click", () => submitFeedback("stuck", "worked"));
+  wizardNode.querySelector("#feedback-link-failed").addEventListener("click", () => submitFeedback("stuck", "failed"));
   wizardNode.querySelector("#start-over").addEventListener("click", init);
 }
 
@@ -361,9 +386,36 @@ async function submitPlan(payload) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    currentPlanPayload = payload;
+    currentPlan = plan;
     renderPlan(plan);
   } catch (error) {
     renderError("Could not generate a plan", error.message);
+  }
+}
+
+async function submitFeedback(outcome, linkStatus) {
+  const consent = Boolean(wizardNode.querySelector("#feedback-consent")?.checked);
+  if (!consent) {
+    statusNode.textContent = "Feedback not sent: consent checkbox is required.";
+    return;
+  }
+  try {
+    const payload = {
+      consent,
+      outcome,
+      link_status: linkStatus,
+      incident_id: currentPlan?.incident_id,
+      decision_path_id: currentPlan?.decision_path_id,
+    };
+    await fetchJson("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    statusNode.textContent = "Feedback sent to the local session only.";
+  } catch (error) {
+    renderError("Could not submit feedback", error.message);
   }
 }
 

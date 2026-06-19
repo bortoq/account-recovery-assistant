@@ -463,3 +463,24 @@ def test_unknown_incident_questionnaire_returns_key_error():
         assert "unknown_incident" in str(exc)
     else:
         raise AssertionError("Expected KeyError for unknown incident")
+
+
+def test_microsoft_consumer_scope_uses_personal_account_recovery_path():
+    plan = generate_recovery_plan(
+        {
+            "service": "Microsoft",
+            "incident_id": "microsoft_admin_lockout",
+            "account_state": "locked_suspicious_activity",
+            "account_scope": "consumer",
+            "still_knows_password": False,
+            "has_backup_admin": False,
+            "has_billing_access": False,
+            "domain_control": False,
+            "role": "owner",
+        }
+    )
+
+    assert plan["decision_path_id"] == "consumer_account_recovery"
+    assert "personal microsoft account" in plan["next_best_action"].lower()
+    assert any("working contact email" in item.lower() for item in plan["prepare_now"])
+    assert any("tenant support" in item.lower() for item in plan["what_can_make_this_worse"])

@@ -2,10 +2,10 @@
   "service": "Microsoft",
   "incident_id": "microsoft_admin_lockout",
   "account_state": "locked_suspicious_activity",
+  "account_scope": "consumer",
+  "still_knows_password": false,
   "has_backup_admin": false,
   "has_billing_access": false,
-  "domain_control": true,
-  "role": "owner",
-  "still_knows_password": false,
-  "account_scope": "tenant"
+  "domain_control": false,
+  "role": "owner"
 }

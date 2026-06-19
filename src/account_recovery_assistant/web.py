@@ -11,7 +11,13 @@ from pathlib import Path
 from typing import Any
 
 from . import generate_recovery_plan, get_incident_definition, get_incident_questionnaire, list_supported_incidents
+from .report import render_markdown
 from .validation import ValidationError, validate_situation
+
+
+FEEDBACK_EVENTS: list[dict[str, Any]] = []
+ALLOWED_FEEDBACK_OUTCOMES = {"recovered", "stuck"}
+ALLOWED_LINK_FEEDBACK = {"worked", "failed", "not_used"}
 
 
 def _static_dir() -> Path:
@@ -54,9 +60,14 @@ def _json_response(handler: BaseHTTPRequestHandler, payload: dict[str, Any], sta
     handler.wfile.write(body)
 
 
-def _text_response(handler: BaseHTTPRequestHandler, body: str, content_type: str = "text/html; charset=utf-8") -> None:
+def _text_response(
+    handler: BaseHTTPRequestHandler,
+    body: str,
+    content_type: str = "text/html; charset=utf-8",
+    status: int = HTTPStatus.OK,
+) -> None:
     data = body.encode("utf-8")
-    handler.send_response(HTTPStatus.OK)
+    handler.send_response(status)
     handler.send_header("Content-Type", content_type)
     handler.send_header("Content-Length", str(len(data)))
     handler.end_headers()
@@ -71,6 +82,40 @@ def _asset_response(handler: BaseHTTPRequestHandler, name: str, content_type: st
     handler.send_header("Content-Length", str(len(data)))
     handler.end_headers()
     handler.wfile.write(data)
+
+
+
+def _handle_feedback(handler: BaseHTTPRequestHandler, payload: dict[str, Any]) -> None:
+    if payload.get("consent") is not True:
+        _json_response(
+            handler,
+            {"error": "Consent required", "detail": "Feedback is only accepted when consent is true."},
+            status=400,
+        )
+        return
+
+    outcome = str(payload.get("outcome", "")).lower()
+    link_status = str(payload.get("link_status", "not_used")).lower()
+    if outcome not in ALLOWED_FEEDBACK_OUTCOMES:
+        _json_response(handler, {"error": "Validation error", "field": "outcome", "detail": "Unsupported outcome."}, status=400)
+        return
+    if link_status not in ALLOWED_LINK_FEEDBACK:
+        _json_response(
+            handler,
+            {"error": "Validation error", "field": "link_status", "detail": "Unsupported link feedback."},
+            status=400,
+        )
+        return
+
+    FEEDBACK_EVENTS.append(
+        {
+            "incident_id": payload.get("incident_id"),
+            "decision_path_id": payload.get("decision_path_id"),
+            "outcome": outcome,
+            "link_status": link_status,
+        }
+    )
+    _json_response(handler, {"accepted": True, "stored": "memory_only", "count": len(FEEDBACK_EVENTS)})
 
 
 class _WizardHandler(BaseHTTPRequestHandler):
@@ -107,14 +152,26 @@ class _WizardHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         try:
-            if self.path != "/api/plan":
-                _json_response(self, {"error": "Not found"}, status=404)
-                return
             content_length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(content_length).decode("utf-8"))
-            validate_situation(payload)
-            plan = generate_recovery_plan(payload)
-            _json_response(self, plan)
+
+            if self.path == "/api/plan":
+                validate_situation(payload)
+                plan = generate_recovery_plan(payload)
+                _json_response(self, plan)
+                return
+
+            if self.path == "/api/plan/markdown":
+                validate_situation(payload)
+                plan = generate_recovery_plan(payload)
+                _text_response(self, render_markdown(plan), content_type="text/markdown; charset=utf-8")
+                return
+
+            if self.path == "/api/feedback":
+                _handle_feedback(self, payload)
+                return
+
+            _json_response(self, {"error": "Not found"}, status=404)
         except JSONDecodeError:
             _json_response(self, {"error": "Invalid JSON", "detail": "Request body must be valid JSON."}, status=400)
         except ValidationError as exc:

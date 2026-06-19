@@ -8,6 +8,17 @@ def _boolean_question(question_id: str, prompt: str) -> dict[str, object]:
     }
 
 
+def _single_choice_question(question_id: str, prompt: str, choices: list[dict[str, str]]) -> dict[str, object]:
+    return {
+        "id": question_id,
+        "field": question_id,
+        "prompt": prompt,
+        "answer_type": "single_choice",
+        "required": True,
+        "choices": choices,
+    }
+
+
 def _role_question(prompt: str) -> dict[str, object]:
     return {
         "id": "role",
@@ -66,6 +77,14 @@ INCIDENTS = [
         "title": "Microsoft admin or workspace lockout",
         "questions": [
             _role_question("Are you the admin, owner, or an authorized business representative?"),
+            _single_choice_question(
+                "account_scope",
+                "Is this a personal Microsoft account or a Microsoft 365 tenant/admin account?",
+                [
+                    {"value": "consumer", "label": "Personal Microsoft account"},
+                    {"value": "tenant", "label": "Microsoft 365 tenant or admin account"},
+                ],
+            ),
             _boolean_question("still_knows_password", "Do you still know the account password?"),
             _boolean_question("has_backup_admin", "Is there another admin with working access?"),
             _boolean_question("has_billing_access", "Can you access billing or tenant records?"),

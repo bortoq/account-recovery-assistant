@@ -451,6 +451,7 @@
         }
       ],
       "source_notes": [
+        "Personal Microsoft accounts should use the Microsoft account recovery form guidance; Microsoft 365 tenant/admin incidents should use business support paths.",
         "Business recovery is stronger when domain ownership and billing evidence are ready early.",
         "Admin lockout needs business-grade recovery steps, not just consumer password reset behavior."
       ],
@@ -474,6 +475,34 @@
         "expected_timeline": "often same day to several days depending on support validation and whether domain or billing proof is immediately available"
       },
       "decision_paths": [
+        {
+          "id": "consumer_account_recovery",
+          "when": {
+            "account_scope": "consumer"
+          },
+          "next_best_action": "Use the Microsoft account recovery form guidance for a personal Microsoft account. Work from a familiar device and network, prepare older passwords and account-usage details, and avoid treating this like a Microsoft 365 tenant admin case.",
+          "prepare_now": [
+            "A working contact email where Microsoft can send the recovery result.",
+            "Older passwords, approximate account creation period, and services used such as Outlook, OneDrive, Skype, or Xbox.",
+            "Recent email subject lines, contacts, folder names, Xbox details, or billing details that only the account owner should know.",
+            "A familiar device, browser, and network previously used with the account."
+          ],
+          "what_can_make_this_worse": [
+            "Using Microsoft 365 tenant support for a personal Microsoft account recovery problem.",
+            "Submitting guesses or contradictory details in repeated recovery forms.",
+            "Retrying too many times in one day instead of improving the evidence and waiting for Microsoft's response."
+          ],
+          "escalate_when": [
+            "The official account recovery form repeatedly fails even after you provide consistent account-history evidence.",
+            "The account controls critical email or billing access and delays are causing cascading lockouts."
+          ],
+          "expected_timeline": "often up to 24 hours per Microsoft account recovery form submission",
+          "checklist_additions": [
+            "Use the personal Microsoft account recovery guidance, not the Microsoft 365 admin center path.",
+            "Submit from a familiar device and location and keep answers consistent across attempts."
+          ],
+          "support_summary_override": "I am trying to recover a personal Microsoft account through the official Microsoft account recovery form and can provide account-history evidence."
+        },
         {
           "id": "backup_admin_available",
           "when": {

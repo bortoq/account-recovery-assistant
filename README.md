@@ -128,6 +128,7 @@ Project structure:
 - [roadmap.md](roadmap.md) — full plan and status
 - [docs/current-usage.md](docs/current-usage.md) — detailed usage
 - [docs/releasing.md](docs/releasing.md) — build & publish guide
+- [docs/hosted-operations.md](docs/hosted-operations.md) — hosted privacy, logging, retention, and abuse controls
 - [CHANGELOG.md](CHANGELOG.md) — release history
 
 ---
