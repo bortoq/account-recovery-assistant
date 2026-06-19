@@ -108,6 +108,8 @@ def test_static_app_exposes_markdown_export_and_local_feedback_controls():
 
     assert "Download Markdown" in app_js
     assert "Copy Support Message" in app_js
+    assert "Copy Full Plan" in app_js
+    assert "Print Plan" in app_js
     assert "## Knowledge Freshness" in app_js
     assert "## Common Mistakes To Avoid" in app_js
     assert "## Source Notes" in app_js
@@ -165,3 +167,51 @@ def test_feedback_endpoint_requires_consent_and_accepts_minimal_feedback():
     assert accepted["status"] == 200
     assert payload["accepted"] is True
     assert payload["stored"] == "memory_only"
+
+
+def test_healthz_endpoint_returns_safe_operational_status():
+    response = dispatch_request("GET", "/healthz")
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 200
+    assert payload["status"] == "ok"
+    assert payload["incidents"] >= 4
+    assert "feedback_events" in payload
+
+
+def test_unknown_post_path_returns_404_before_json_parse():
+    response = dispatch_request("POST", "/nope")
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 404
+    assert payload["error"] == "Not found"
+
+
+def test_feedback_endpoint_records_timestamp_consent_and_caps_memory_store():
+    from account_recovery_assistant import web
+
+    web.FEEDBACK_EVENTS.clear()
+    for index in range(web.FEEDBACK_MAX_EVENTS + 2):
+        response = dispatch_request(
+            "POST",
+            "/api/feedback",
+            body=json.dumps(
+                {
+                    "consent": True,
+                    "incident_id": "gmail_mfa_loss",
+                    "decision_path_id": f"path-{index}",
+                    "outcome": "recovered",
+                    "link_status": "worked",
+                }
+            ).encode("utf-8"),
+        )
+        assert response["status"] == 200
+
+    payload = json.loads(response["body"].decode("utf-8"))
+    assert payload["count"] == web.FEEDBACK_MAX_EVENTS
+    assert payload["max_events"] == web.FEEDBACK_MAX_EVENTS
+    assert len(web.FEEDBACK_EVENTS) == web.FEEDBACK_MAX_EVENTS
+    assert web.FEEDBACK_EVENTS[-1]["consent"] is True
+    assert web.FEEDBACK_EVENTS[-1]["timestamp"]
+    assert web.FEEDBACK_EVENTS[0]["decision_path_id"] == "path-2"
+    web.FEEDBACK_EVENTS.clear()

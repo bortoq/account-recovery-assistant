@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Account Recovery Assistant service priorities",
+  "type": "object",
+  "required": ["top_services", "next_candidates"],
+  "properties": {
+    "top_services": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["priority", "service", "aliases", "criticality", "recovery_complexity", "recommended_focus", "official_links"],
+        "properties": {
+          "priority": {"type": "integer", "minimum": 1},
+          "service": {"type": "string"},
+          "aliases": {"type": "array", "items": {"type": "string"}},
+          "official_links": {"type": "array", "items": {"$ref": "#/$defs/link"}}
+        }
+      }
+    },
+    "next_candidates": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "link": {
+      "type": "object",
+      "required": ["label", "url"],
+      "properties": {
+        "label": {"type": "string"},
+        "url": {"type": "string", "pattern": "^https://"}
+      }
+    }
+  }
+}

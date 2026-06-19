@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Account Recovery Assistant recovery playbooks",
+  "type": "object",
+  "required": ["safety_warnings", "hardening_steps", "incident_records", "playbooks"],
+  "properties": {
+    "safety_warnings": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "hardening_steps": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "incident_records": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["case_type", "service_aliases", "title", "support_summary", "last_verified_at", "review_due_at", "confidence", "status", "checklist", "ownership_evidence", "official_links", "default_guidance"],
+        "properties": {
+          "case_type": {"type": "string"},
+          "service_aliases": {"type": "array", "items": {"type": "string"}},
+          "title": {"type": "string"},
+          "support_summary": {"type": "string"},
+          "official_links": {"type": "array", "items": {"$ref": "#/$defs/link"}}
+        }
+      }
+    },
+    "playbooks": {"type": "object"}
+  },
+  "$defs": {
+    "link": {
+      "type": "object",
+      "required": ["label", "url"],
+      "properties": {
+        "label": {"type": "string"},
+        "url": {"type": "string", "pattern": "^https://"}
+      }
+    }
+  }
+}

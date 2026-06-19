@@ -1,5 +1,6 @@
 import json
 import threading
+from datetime import datetime, timezone
 from contextlib import contextmanager
 from email.message import Message
 from http import HTTPStatus
@@ -16,6 +17,7 @@ from .validation import ValidationError, validate_situation
 
 
 FEEDBACK_EVENTS: list[dict[str, Any]] = []
+FEEDBACK_MAX_EVENTS = 100
 ALLOWED_FEEDBACK_OUTCOMES = {"recovered", "stuck"}
 ALLOWED_LINK_FEEDBACK = {"worked", "failed", "not_used"}
 
@@ -109,13 +111,20 @@ def _handle_feedback(handler: BaseHTTPRequestHandler, payload: dict[str, Any]) -
 
     FEEDBACK_EVENTS.append(
         {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "consent": True,
             "incident_id": payload.get("incident_id"),
             "decision_path_id": payload.get("decision_path_id"),
             "outcome": outcome,
             "link_status": link_status,
         }
     )
-    _json_response(handler, {"accepted": True, "stored": "memory_only", "count": len(FEEDBACK_EVENTS)})
+    if len(FEEDBACK_EVENTS) > FEEDBACK_MAX_EVENTS:
+        del FEEDBACK_EVENTS[: len(FEEDBACK_EVENTS) - FEEDBACK_MAX_EVENTS]
+    _json_response(
+        handler,
+        {"accepted": True, "stored": "memory_only", "count": len(FEEDBACK_EVENTS), "max_events": FEEDBACK_MAX_EVENTS},
+    )
 
 
 class _WizardHandler(BaseHTTPRequestHandler):
@@ -129,6 +138,9 @@ class _WizardHandler(BaseHTTPRequestHandler):
                 return
             if self.path == "/static/app.js":
                 _asset_response(self, "app.js", "application/javascript; charset=utf-8")
+                return
+            if self.path == "/healthz":
+                _json_response(self, {"status": "ok", "incidents": len(list_supported_incidents()), "feedback_events": len(FEEDBACK_EVENTS)})
                 return
             if self.path == "/api/incidents":
                 _json_response(self, {"incidents": list_supported_incidents()})
@@ -152,6 +164,10 @@ class _WizardHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         try:
+            if self.path not in {"/api/plan", "/api/plan/markdown", "/api/feedback"}:
+                _json_response(self, {"error": "Not found"}, status=404)
+                return
+
             content_length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(content_length).decode("utf-8"))
 
@@ -170,8 +186,6 @@ class _WizardHandler(BaseHTTPRequestHandler):
             if self.path == "/api/feedback":
                 _handle_feedback(self, payload)
                 return
-
-            _json_response(self, {"error": "Not found"}, status=404)
         except JSONDecodeError:
             _json_response(self, {"error": "Invalid JSON", "detail": "Request body must be valid JSON."}, status=400)
         except ValidationError as exc:

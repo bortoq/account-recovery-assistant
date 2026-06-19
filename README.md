@@ -102,6 +102,9 @@ PYTHONPATH=src python3 -m pytest -v
 # Build package
 python3 -m build --no-isolation
 
+# Validate knowledge-base structure and packaged-data sync
+python3 scripts/validate_data.py
+
 # Check official links in the knowledge base
 python3 scripts/check_links.py
 ```
@@ -127,8 +130,13 @@ Project structure:
 
 - [roadmap.md](roadmap.md) — full plan and status
 - [docs/current-usage.md](docs/current-usage.md) — detailed usage
+- [docs/demo-script.md](docs/demo-script.md) — short demo flow
+- [docs/interview-script.md](docs/interview-script.md) — user discovery and validation questions
+- [docs/landing-pages.md](docs/landing-pages.md) — landing-page validation drafts
 - [docs/releasing.md](docs/releasing.md) — build & publish guide
 - [docs/hosted-operations.md](docs/hosted-operations.md) — hosted privacy, logging, retention, and abuse controls
+- [SECURITY.md](SECURITY.md) — vulnerability and safety reporting
+- [PUBLIC_ALPHA_CHECKLIST.md](PUBLIC_ALPHA_CHECKLIST.md) — public alpha release gate
 - [CHANGELOG.md](CHANGELOG.md) — release history
 
 ---

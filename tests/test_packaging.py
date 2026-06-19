@@ -76,3 +76,38 @@ def test_data_files_are_synced_between_top_level_and_packaged():
             f"{name} differs between data/ and src/account_recovery_assistant/data/. "
             f"Run: cp data/{name} src/account_recovery_assistant/data/{name}"
         )
+
+
+def test_installed_console_script_runs_real_example():
+    with tempfile.TemporaryDirectory() as target_dir:
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--no-build-isolation",
+                "--no-deps",
+                "--target",
+                target_dir,
+                ".",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        env = os.environ.copy()
+        env["PYTHONPATH"] = target_dir
+        script = Path(target_dir) / "bin" / "account-recovery-assistant"
+        result = subprocess.run(
+            [str(script), "examples/lost_mfa.json"],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+
+    plan = json.loads(result.stdout)
+    assert plan["allowed"] is True
+    assert plan["incident_id"] == "gmail_mfa_loss"

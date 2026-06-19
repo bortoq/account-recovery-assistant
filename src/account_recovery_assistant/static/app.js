@@ -228,17 +228,20 @@ function downloadText(filename, text) {
   URL.revokeObjectURL(url);
 }
 
-async function downloadMarkdownFromServer() {
+async function markdownFromServerOrFallback() {
   const payload = currentPlanPayload;
   if (!payload) {
-    downloadText("account-recovery-plan.md", planToMarkdown(currentPlan));
-    return;
+    return planToMarkdown(currentPlan);
   }
-  const markdown = await fetchText("/api/plan/markdown", {
+  return fetchText("/api/plan/markdown", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
+
+async function downloadMarkdownFromServer() {
+  const markdown = await markdownFromServerOrFallback();
   downloadText("account-recovery-plan.md", markdown);
 }
 
@@ -353,7 +356,9 @@ function renderPlan(plan) {
       </section>
       <div class="actions">
         <button type="button" id="copy-support-message">Copy Support Message</button>
+        <button type="button" id="copy-full-plan">Copy Full Plan</button>
         <button type="button" id="download-markdown">Download Markdown</button>
+        <button type="button" id="print-plan">Print Plan</button>
         <button type="button" class="secondary" id="start-over">Start Over</button>
       </div>
     </section>
@@ -362,6 +367,18 @@ function renderPlan(plan) {
   wizardNode.querySelector("#copy-support-message").addEventListener("click", async () => {
     await copyText(plan.support_message);
     statusNode.textContent = "Support message copied.";
+  });
+  wizardNode.querySelector("#copy-full-plan").addEventListener("click", async () => {
+    try {
+      await copyText(await markdownFromServerOrFallback());
+      statusNode.textContent = "Full plan copied.";
+    } catch (error) {
+      await copyText(planToMarkdown(plan));
+      statusNode.textContent = "Full plan copied from browser fallback.";
+    }
+  });
+  wizardNode.querySelector("#print-plan").addEventListener("click", () => {
+    window.print();
   });
   wizardNode.querySelector("#download-markdown").addEventListener("click", async () => {
     try {
