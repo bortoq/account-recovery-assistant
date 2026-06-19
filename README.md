@@ -1,5 +1,9 @@
 # Account Recovery Assistant
 
+[![CI](https://github.com/bortoq/account-recovery-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/bortoq/account-recovery-assistant/actions/workflows/ci.yml)
+[![Link Check](https://github.com/bortoq/account-recovery-assistant/actions/workflows/link-check.yml/badge.svg)](https://github.com/bortoq/account-recovery-assistant/actions/workflows/link-check.yml)
+![Status](https://img.shields.io/badge/status-controlled%20alpha-bb6c2f)
+
 **Safe account recovery guidance through official channels — for rightful owners and authorized representatives.**
 
 > **⚠️ Controlled alpha.** This tool helps you navigate official recovery flows. It does **not** automate account recovery, guarantee success, or bypass security.
@@ -39,6 +43,9 @@ PYTHONPATH=src python3 -m account_recovery_assistant examples/lost_mfa.json
 
 # Markdown report
 account-recovery-assistant --format markdown examples/lost_mfa.json
+
+# Version
+account-recovery-assistant --version
 ```
 
 ### Web Wizard
@@ -102,6 +109,9 @@ PYTHONPATH=src python3 -m pytest -v
 # Build package
 python3 -m build --no-isolation
 
+# Sync packaged data from the top-level data source of truth
+python3 scripts/sync_packaged_data.py
+
 # Validate knowledge-base structure and packaged-data sync
 python3 scripts/validate_data.py
 
@@ -134,6 +144,8 @@ Project structure:
 - [docs/interview-script.md](docs/interview-script.md) — user discovery and validation questions
 - [docs/landing-pages.md](docs/landing-pages.md) — landing-page validation drafts
 - [docs/releasing.md](docs/releasing.md) — build & publish guide
+- [docs/public-alpha-status.md](docs/public-alpha-status.md) — current public alpha readiness status
+- [docs/deployment.md](docs/deployment.md) — local container and hosted deployment skeleton
 - [docs/hosted-operations.md](docs/hosted-operations.md) — hosted privacy, logging, retention, and abuse controls
 - [SECURITY.md](SECURITY.md) — vulnerability and safety reporting
 - [PUBLIC_ALPHA_CHECKLIST.md](PUBLIC_ALPHA_CHECKLIST.md) — public alpha release gate

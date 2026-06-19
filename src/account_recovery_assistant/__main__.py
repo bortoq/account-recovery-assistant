@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from . import __version__
 from .planner import generate_recovery_plan
 from .validation import ValidationError, validate_situation
 from .report import render_markdown
@@ -23,6 +24,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Output format.",
     )
     parser.add_argument("--serve-web", action="store_true", help="Start the local web wizard.")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--host", default="127.0.0.1", help="Host for the local web wizard.")
     parser.add_argument("--port", type=int, default=8000, help="Port for the local web wizard.")
     args = parser.parse_args(argv)

@@ -131,3 +131,20 @@ def test_cli_all_example_files_are_valid_inputs():
         plan = json.loads(result.stdout)
         assert plan["allowed"] is True, example_path
         assert plan["next_best_action"], example_path
+
+
+def test_cli_prints_version():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "account_recovery_assistant",
+            "--version",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        env=_env_with_pythonpath(),
+    )
+
+    assert "account-recovery-assistant" in result.stdout

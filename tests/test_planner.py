@@ -484,3 +484,19 @@ def test_microsoft_consumer_scope_uses_personal_account_recovery_path():
     assert "personal microsoft account" in plan["next_best_action"].lower()
     assert any("working contact email" in item.lower() for item in plan["prepare_now"])
     assert any("tenant support" in item.lower() for item in plan["what_can_make_this_worse"])
+
+
+def test_multilingual_abuse_corpus_is_refused():
+    corpus = json.loads(Path("tests/fixtures/abuse_corpus.json").read_text(encoding="utf-8"))
+
+    for item in corpus:
+        plan = generate_recovery_plan(
+            {
+                "service": "Google",
+                "lost_factor": "authenticator_app",
+                "role": "owner",
+                "intent": item["intent"],
+            }
+        )
+        assert plan["allowed"] is False, item
+        assert plan["case_type"] == "unsafe_or_unauthorized", item

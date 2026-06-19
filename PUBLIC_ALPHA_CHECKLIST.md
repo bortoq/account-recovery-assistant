@@ -19,6 +19,7 @@ Use this checklist before tagging or announcing a controlled public alpha.
 ## Technical Release
 
 - [ ] `PYTHONPATH=src python3 -m pytest -q` passes.
+- [ ] `python3 scripts/sync_packaged_data.py` was run before packaging.
 - [ ] `python3 scripts/validate_data.py` passes.
 - [ ] `python3 scripts/check_links.py` has zero hard failures.
 - [ ] `python3 -m build --no-isolation` succeeds.

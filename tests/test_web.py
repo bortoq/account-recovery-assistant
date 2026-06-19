@@ -191,6 +191,7 @@ def test_feedback_endpoint_records_timestamp_consent_and_caps_memory_store():
     from account_recovery_assistant import web
 
     web.FEEDBACK_EVENTS.clear()
+    web.RATE_LIMIT_EVENTS.clear()
     for index in range(web.FEEDBACK_MAX_EVENTS + 2):
         response = dispatch_request(
             "POST",
@@ -215,3 +216,64 @@ def test_feedback_endpoint_records_timestamp_consent_and_caps_memory_store():
     assert web.FEEDBACK_EVENTS[-1]["timestamp"]
     assert web.FEEDBACK_EVENTS[0]["decision_path_id"] == "path-2"
     web.FEEDBACK_EVENTS.clear()
+    web.RATE_LIMIT_EVENTS.clear()
+
+
+def test_plan_endpoint_rejects_non_object_json_payload():
+    response = dispatch_request("POST", "/api/plan", body=b"[]")
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 400
+    assert payload["error"] == "Validation error"
+    assert "object" in payload["detail"]
+
+
+def test_plan_endpoint_rejects_wrong_boolean_type():
+    response = dispatch_request(
+        "POST",
+        "/api/plan",
+        body=json.dumps(
+            {
+                "incident_id": "gmail_mfa_loss",
+                "service": "Google",
+                "role": "owner",
+                "still_knows_password": "yes",
+                "has_backup_codes": False,
+                "has_recovery_email": True,
+                "has_trusted_device": False,
+            }
+        ).encode("utf-8"),
+    )
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 400
+    assert payload["field"] == "still_knows_password"
+
+
+def test_feedback_endpoint_rejects_unsupported_link_status():
+    response = dispatch_request(
+        "POST",
+        "/api/feedback",
+        body=json.dumps({"consent": True, "outcome": "recovered", "link_status": "maybe"}).encode("utf-8"),
+    )
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 400
+    assert payload["field"] == "link_status"
+
+
+def test_rate_limit_returns_429_when_limit_is_exceeded(monkeypatch):
+    from account_recovery_assistant import web
+
+    web.RATE_LIMIT_EVENTS.clear()
+    monkeypatch.setattr(web, "RATE_LIMIT_MAX_REQUESTS", 1)
+    payload = json.dumps({"consent": True, "outcome": "recovered", "link_status": "worked"}).encode("utf-8")
+
+    first = dispatch_request("POST", "/api/feedback", body=payload)
+    second = dispatch_request("POST", "/api/feedback", body=payload)
+    second_payload = json.loads(second["body"].decode("utf-8"))
+
+    assert first["status"] == 200
+    assert second["status"] == 429
+    assert second_payload["error"] == "Rate limit exceeded"
+    web.RATE_LIMIT_EVENTS.clear()

@@ -20,6 +20,10 @@ jobs:
         run: python -m pip install --upgrade pip build pytest setuptools
       - name: Run tests
         run: PYTHONPATH=src python -m pytest -v
+      - name: Sync packaged data
+        run: python scripts/sync_packaged_data.py
+      - name: Validate data
+        run: python scripts/validate_data.py
       - name: Build package
         run: python -m build --no-isolation
       - name: Wheel smoke test

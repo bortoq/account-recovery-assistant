@@ -1,5 +1,7 @@
 import json
+import os
 import threading
+import time
 from datetime import datetime, timezone
 from contextlib import contextmanager
 from email.message import Message
@@ -18,6 +20,9 @@ from .validation import ValidationError, validate_situation
 
 FEEDBACK_EVENTS: list[dict[str, Any]] = []
 FEEDBACK_MAX_EVENTS = 100
+RATE_LIMIT_EVENTS: dict[str, list[float]] = {}
+RATE_LIMIT_MAX_REQUESTS = int(os.environ.get("ARA_RATE_LIMIT_MAX_REQUESTS", "120"))
+RATE_LIMIT_WINDOW_SECONDS = int(os.environ.get("ARA_RATE_LIMIT_WINDOW_SECONDS", "60"))
 ALLOWED_FEEDBACK_OUTCOMES = {"recovered", "stuck"}
 ALLOWED_LINK_FEEDBACK = {"worked", "failed", "not_used"}
 
@@ -87,6 +92,36 @@ def _asset_response(handler: BaseHTTPRequestHandler, name: str, content_type: st
 
 
 
+def _rate_limit_key(handler: BaseHTTPRequestHandler) -> str:
+    client_address = getattr(handler, "client_address", ("local", 0))
+    return str(client_address[0])
+
+
+def _rate_limit_allows(handler: BaseHTTPRequestHandler) -> bool:
+    now = time.monotonic()
+    key = _rate_limit_key(handler)
+    window_start = now - RATE_LIMIT_WINDOW_SECONDS
+    events = [event for event in RATE_LIMIT_EVENTS.get(key, []) if event >= window_start]
+    if len(events) >= RATE_LIMIT_MAX_REQUESTS:
+        RATE_LIMIT_EVENTS[key] = events
+        return False
+    events.append(now)
+    RATE_LIMIT_EVENTS[key] = events
+    return True
+
+
+def _rate_limit_response(handler: BaseHTTPRequestHandler) -> None:
+    _json_response(
+        handler,
+        {
+            "error": "Rate limit exceeded",
+            "detail": "Too many requests in a short period. Please wait and try again.",
+        },
+        status=429,
+    )
+
+
+
 def _handle_feedback(handler: BaseHTTPRequestHandler, payload: dict[str, Any]) -> None:
     if payload.get("consent") is not True:
         _json_response(
@@ -140,7 +175,15 @@ class _WizardHandler(BaseHTTPRequestHandler):
                 _asset_response(self, "app.js", "application/javascript; charset=utf-8")
                 return
             if self.path == "/healthz":
-                _json_response(self, {"status": "ok", "incidents": len(list_supported_incidents()), "feedback_events": len(FEEDBACK_EVENTS)})
+                _json_response(
+                    self,
+                    {
+                        "status": "ok",
+                        "incidents": len(list_supported_incidents()),
+                        "feedback_events": len(FEEDBACK_EVENTS),
+                        "rate_limit_max_requests": RATE_LIMIT_MAX_REQUESTS,
+                    },
+                )
                 return
             if self.path == "/api/incidents":
                 _json_response(self, {"incidents": list_supported_incidents()})
@@ -168,8 +211,15 @@ class _WizardHandler(BaseHTTPRequestHandler):
                 _json_response(self, {"error": "Not found"}, status=404)
                 return
 
+            if not _rate_limit_allows(self):
+                _rate_limit_response(self)
+                return
+
             content_length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(content_length).decode("utf-8"))
+            if not isinstance(payload, dict):
+                _json_response(self, {"error": "Validation error", "detail": "Request body must be a JSON object."}, status=400)
+                return
 
             if self.path == "/api/plan":
                 validate_situation(payload)
@@ -194,13 +244,16 @@ class _WizardHandler(BaseHTTPRequestHandler):
             _json_response(self, {"error": "Unknown incident", "detail": str(exc)}, status=404)
 
     def log_message(self, format: str, *args: object) -> None:
-        return
+        # No request bodies are logged. Enable basic access logs only for local debugging.
+        if os.environ.get("ARA_ACCESS_LOG") == "1":
+            super().log_message(format, *args)
 
 
 class _DispatcherHandler(_WizardHandler):
     def __init__(self, method: str, path: str, body: bytes = b"", headers: dict[str, str] | None = None):
         self.command = method
         self.path = path
+        self.client_address = ("127.0.0.1", 0)
         self.rfile = BytesIO(body)
         self.wfile = BytesIO()
         self.headers = Message()
