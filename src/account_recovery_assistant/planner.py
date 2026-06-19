@@ -3,7 +3,7 @@ from typing import Any
 
 from .playbooks import load_playbooks, load_service_priorities
 from .questionnaire import get_incident_definition
-from .validation import UNAUTHORIZED_ROLES
+from .validation import UNAUTHORIZED_ROLES, ALLOWED_ROLES
 
 
 UNSAFE_INTENT_WORDS = (
@@ -25,28 +25,37 @@ UNSAFE_INTENT_WORDS = (
 )
 
 
+def _refusal_plan(reason: str = "") -> dict[str, Any]:
+    return {
+        "allowed": False,
+        "case_type": "unsafe_or_unauthorized",
+        "reason": reason or "This assistant only helps the rightful owner or an authorized representative use official recovery channels.",
+        "checklist": [],
+        "evidence": [],
+        "official_links": [],
+        "support_message": "",
+        "hardening_steps": [],
+        "next_best_action": "",
+        "prepare_now": [],
+        "what_can_make_this_worse": [],
+        "escalate_when": [],
+        "expected_timeline": "",
+        "safety_warnings": [
+            "Do not attempt to access accounts without authorization.",
+            "Use only official recovery procedures.",
+        ],
+        "questionnaire": None,
+    }
+
+
 def generate_recovery_plan(situation: dict[str, Any]) -> dict[str, Any]:
     if _is_unsafe_or_unauthorized(situation):
-        return {
-            "allowed": False,
-            "case_type": "unsafe_or_unauthorized",
-            "reason": "This assistant only helps the rightful owner or an authorized representative use official recovery channels.",
-            "checklist": [],
-            "evidence": [],
-            "official_links": [],
-            "support_message": "",
-            "hardening_steps": [],
-            "next_best_action": "",
-            "prepare_now": [],
-            "what_can_make_this_worse": [],
-            "escalate_when": [],
-            "expected_timeline": "",
-            "safety_warnings": [
-                "Do not attempt to access accounts without authorization.",
-                "Use only official recovery procedures.",
-            ],
-            "questionnaire": None,
-        }
+        return _refusal_plan("This assistant only helps the rightful owner or an authorized representative use official recovery channels.")
+
+    if "role" not in situation or not situation.get("role"):
+        return _refusal_plan("Role is required. Specify 'owner' or 'authorized_representative'.")
+    if str(situation["role"]).lower() not in ALLOWED_ROLES:
+        return _refusal_plan(f"Unsupported role '{situation['role']}'. Allowed roles: owner, authorized_representative.")
 
     playbooks = load_playbooks()
     service_priorities = load_service_priorities()

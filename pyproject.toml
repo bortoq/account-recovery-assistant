@@ -14,7 +14,7 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Information Technology",
-    "License :: Other/Proprietary License",
+    "License :: Other/Proprietary License",  # SPDX: LicenseRef-Proprietary — see LICENSE,
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Topic :: Security",

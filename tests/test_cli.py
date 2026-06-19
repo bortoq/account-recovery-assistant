@@ -1,6 +1,18 @@
 import json
+import os
 import subprocess
 import sys
+
+
+SRC_DIR = os.path.join(os.path.dirname(__file__), "..", "src")
+
+
+def _env_with_pythonpath() -> dict[str, str]:
+    env = os.environ.copy()
+    env.setdefault("PYTHONPATH", SRC_DIR)
+    if SRC_DIR not in env["PYTHONPATH"].split(":"):
+        env["PYTHONPATH"] = f"{SRC_DIR}:{env['PYTHONPATH']}"
+    return env
 
 
 def test_cli_can_start_web_server_help():
@@ -14,6 +26,7 @@ def test_cli_can_start_web_server_help():
         check=True,
         capture_output=True,
         text=True,
+        env=_env_with_pythonpath(),
     )
 
     assert "--serve-web" in result.stdout
@@ -30,6 +43,7 @@ def test_cli_prints_recovery_plan_for_lost_mfa_example():
         check=True,
         capture_output=True,
         text=True,
+        env=_env_with_pythonpath(),
     )
 
     plan = json.loads(result.stdout)
@@ -53,6 +67,7 @@ def test_cli_prints_markdown_report_when_requested():
         check=True,
         capture_output=True,
         text=True,
+        env=_env_with_pythonpath(),
     )
 
     assert result.stdout.startswith("# Account Recovery Plan")
@@ -90,6 +105,7 @@ def test_cli_examples_cover_meta_and_microsoft_branches():
             check=True,
             capture_output=True,
             text=True,
+            env=_env_with_pythonpath(),
         )
 
         plan = json.loads(result.stdout)

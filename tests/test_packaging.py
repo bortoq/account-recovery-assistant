@@ -62,3 +62,17 @@ def test_package_installs_into_target_and_can_load_packaged_json_data():
 
     payload = json.loads(result.stdout)
     assert payload == {"allowed": True, "case_type": "lost_mfa_device"}
+
+
+def test_data_files_are_synced_between_top_level_and_packaged():
+    """Ensure data/ and src/.../data/ stay identical to prevent drift."""
+    top_level = Path("data")
+    packaged = Path("src/account_recovery_assistant/data")
+
+    for name in ["recovery_playbooks.json", "service_priorities.json"]:
+        top = json.loads((top_level / name).read_text(encoding="utf-8"))
+        pkg = json.loads((packaged / name).read_text(encoding="utf-8"))
+        assert top == pkg, (
+            f"{name} differs between data/ and src/account_recovery_assistant/data/. "
+            f"Run: cp data/{name} src/account_recovery_assistant/data/{name}"
+        )

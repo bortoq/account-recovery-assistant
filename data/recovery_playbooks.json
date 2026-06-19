@@ -14,7 +14,10 @@
   "incident_records": {
     "gmail_mfa_loss": {
       "case_type": "lost_mfa_device",
-      "service_aliases": ["google", "gmail"],
+      "service_aliases": [
+        "google",
+        "gmail"
+      ],
       "title": "Lost MFA device for a Google account",
       "support_summary": "I lost access to my authenticator app for a Google account and need help through the official recovery flow.",
       "last_verified_at": "2026-06-19",
@@ -161,7 +164,11 @@
     },
     "apple_trusted_device_loss": {
       "case_type": "changed_phone_number",
-      "service_aliases": ["apple", "icloud", "apple id"],
+      "service_aliases": [
+        "apple",
+        "icloud",
+        "apple id"
+      ],
       "title": "Lost trusted device or trusted phone for Apple ID recovery",
       "support_summary": "I lost access to a trusted Apple device or trusted phone number and need to recover access through Apple's official process.",
       "last_verified_at": "2026-06-19",
@@ -278,7 +285,13 @@
     },
     "meta_account_hacked": {
       "case_type": "suspicious_activity_lock",
-      "service_aliases": ["meta", "facebook", "instagram", "fb", "ig"],
+      "service_aliases": [
+        "meta",
+        "facebook",
+        "instagram",
+        "fb",
+        "ig"
+      ],
       "title": "Facebook or Instagram account hacked",
       "support_summary": "The account appears compromised and I need to secure it through Meta's official hacked-account recovery flows.",
       "last_verified_at": "2026-05-15",
@@ -344,25 +357,35 @@
           "when": {
             "business_account": true
           },
-          "next_best_action": "Use the phone-linked recovery route in Meta's hacked-account flow before opening duplicate reports.",
+          "next_best_action": "Document linked business assets (ad accounts, Pages, catalogs, apps) and their admin lists before starting recovery. Use Meta's hacked-account flow at https://www.facebook.com/hacked. Prepare business registration documents or tax IDs to prove business ownership. If you still control a recovery email or phone, secure that first before proceeding through Meta's identity verification.",
           "prepare_now": [
-            "A list of linked business page, creator, or ad account assets that could also be affected.",
-            "Your current profile handle, old profile details, and the approximate time the takeover started.",
-            "A photo ID that matches the account identity if Meta requests identity verification."
+            "Business registration documents (EIN, VAT, company number, or equivalent) for identity verification.",
+            "Linked email addresses and admin user names for Business Manager or Ads Manager.",
+            "Ad account IDs or Page URLs associated with the account.",
+            "Recent billing invoices or payment methods on file for the business.",
+            "A short timeline of when admin access was lost and any suspicious activity.",
+            "Any recovery email or phone still under your control."
           ],
           "what_can_make_this_worse": [
-            "Opening too many duplicate reports instead of following one hacked-account flow to completion.",
-            "Delaying session revocation while the attacker still controls linked business assets.",
-            "Ignoring the security of the linked email account while trying to recover Meta access."
+            "Creating a duplicate Business Manager instead of recovering the original account.",
+            "Removing the only remaining admin before regaining full control of the account.",
+            "Using unofficial recovery services or paying third parties for account recovery.",
+            "Changing linked email, phone, or billing details during an active recovery review.",
+            "Opening too many duplicate support tickets instead of following one hacked-account flow."
           ],
           "escalate_when": [
-            "Meta asks for identity proof but the account remains locked after you provide it.",
-            "Linked business assets such as a business page or ad account also show attacker control."
+            "Meta's hacked-account flow loops without offering a working verification path.",
+            "You can prove business ownership but Meta support keeps rejecting without clear reason.",
+            "The account controls active ad spend or campaigns and recovery is time-sensitive.",
+            "A business support representative is available but you cannot reach them through self-service."
           ],
           "expected_timeline": "same day to several days depending on whether you still control one original recovery factor or need identity review",
           "checklist_additions": [
-            "Document suspicious sessions and linked business assets before making security changes."
-          ]
+            "Document suspicious sessions, linked business assets, and admin lists before making security changes.",
+            "After regaining access, review Business Manager user roles and remove unrecognized admins.",
+            "Enable two-factor authentication on the recovered account and require it for all business admins."
+          ],
+          "support_summary_addition": "This account manages business assets including ad accounts and Pages. Business verification documents are available."
         },
         {
           "id": "email_controlled_path",
@@ -383,7 +406,14 @@
     },
     "microsoft_admin_lockout": {
       "case_type": "suspicious_activity_lock",
-      "service_aliases": ["microsoft", "outlook", "office 365", "microsoft 365", "azure", "entra"],
+      "service_aliases": [
+        "microsoft",
+        "outlook",
+        "office 365",
+        "microsoft 365",
+        "azure",
+        "entra"
+      ],
       "title": "Microsoft admin or workspace lockout",
       "support_summary": "I am trying to restore admin or workspace access through Microsoft's official business recovery procedures.",
       "last_verified_at": "2026-06-19",
@@ -413,7 +443,7 @@
       "official_links": [
         {
           "label": "Microsoft Account Recovery",
-          "url": "https://account.live.com/acsr"
+          "url": "https://account.microsoft.com/recovery"
         },
         {
           "label": "Microsoft 365 Admin Help",
@@ -503,7 +533,7 @@
         "microsoft": [
           {
             "label": "Microsoft Account Recovery",
-            "url": "https://account.live.com/acsr"
+            "url": "https://account.microsoft.com/recovery"
           }
         ]
       }
@@ -544,7 +574,7 @@
         "microsoft": [
           {
             "label": "Microsoft Account Recovery",
-            "url": "https://account.live.com/acsr"
+            "url": "https://account.microsoft.com/recovery"
           }
         ]
       }
@@ -575,7 +605,7 @@
         "microsoft": [
           {
             "label": "Microsoft Account Recovery",
-            "url": "https://account.live.com/acsr"
+            "url": "https://account.microsoft.com/recovery"
           }
         ],
         "google": [

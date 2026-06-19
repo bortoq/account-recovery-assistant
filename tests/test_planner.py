@@ -316,10 +316,12 @@ def test_meta_business_takeover_flags_linked_assets_and_fast_escalation():
     )
 
     assert plan["decision_path_id"] == "business_asset_takeover"
-    assert "phone-linked recovery" in plan["next_best_action"].lower()
+    assert "business" in plan["next_best_action"].lower()
+    assert "hacked-account flow" in plan["next_best_action"].lower()
     assert any("ad account" in item.lower() or "business page" in item.lower() for item in plan["prepare_now"])
     assert any("suspicious sessions" in item.lower() for item in plan["checklist"])
-    assert any("linked business assets" in item.lower() for item in plan["escalate_when"])
+    assert any("business registration" in item.lower() for item in plan["prepare_now"])
+    assert any("linked business assets" in item.lower() for item in plan["checklist"])
 
 
 def test_microsoft_backup_admin_path_is_prioritized_when_available():

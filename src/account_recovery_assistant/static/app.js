@@ -174,7 +174,7 @@ function renderPlan(plan) {
       </section>
       <section class="plan-section">
         <h3>Official Links</h3>
-        ${listHtml(plan.official_links, (item) => `<a href="${escapeHtml(item.url)}">${escapeHtml(item.label)}</a>`)}
+        ${listHtml(plan.official_links, (item) => `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.label)}</a>`)}
       </section>
       <section class="plan-section">
         <h3>Support Message</h3>

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .planner import generate_recovery_plan
+from .validation import ValidationError, validate_situation
 from .report import render_markdown
 from .web import serve
 
@@ -34,6 +35,11 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit("Situation JSON path is required unless --serve-web is used.")
 
     situation = _read_json(Path(args.situation))
+    try:
+        situation = validate_situation(situation)
+    except ValidationError as exc:
+        raise SystemExit(f"Validation error — {exc.field}: {exc.message}")
+
     plan = generate_recovery_plan(situation)
     if args.format == "markdown":
         sys.stdout.write(render_markdown(plan))
