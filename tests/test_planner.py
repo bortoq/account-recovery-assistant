@@ -14,8 +14,15 @@ def test_lost_mfa_device_plan_uses_official_recovery_and_backup_codes():
 
     assert plan["case_type"] == "lost_mfa_device"
     assert plan["allowed"] is True
+    assert plan["incident_id"] == "gmail_mfa_loss"
+    assert plan["incident_title"] == "Lost MFA device for a Google account"
     assert any("backup codes" in item.lower() for item in plan["checklist"])
     assert any(link["label"] == "Google Account Recovery" for link in plan["official_links"])
+    assert plan["knowledge_base"]["last_verified_at"] == "2026-06-19"
+    assert plan["knowledge_base"]["confidence"] == "high"
+    assert plan["knowledge_base"]["stale"] is False
+    assert any("too many" in item.lower() for item in plan["common_mistakes"])
+    assert any("official recovery flow" in note.lower() for note in plan["source_notes"])
     assert "I am the rightful owner" in plan["support_message"]
     assert any("passkey" in item.lower() for item in plan["hardening_steps"])
 
@@ -34,9 +41,11 @@ def test_changed_phone_number_plan_prioritizes_recovery_email_and_trusted_device
 
     assert plan["case_type"] == "changed_phone_number"
     assert plan["allowed"] is True
+    assert plan["incident_id"] == "apple_trusted_device_loss"
     assert any("recovery email" in item.lower() for item in plan["checklist"])
     assert any("trusted device" in item.lower() for item in plan["evidence"])
     assert any(link["label"] == "Apple Account Recovery" for link in plan["official_links"])
+    assert any("trusted phone" in item.lower() for item in plan["evidence"])
 
 
 def test_suspicious_activity_lock_plan_warns_against_repeated_attempts():
@@ -54,6 +63,24 @@ def test_suspicious_activity_lock_plan_warns_against_repeated_attempts():
     assert any("repeated" in item.lower() for item in plan["checklist"])
     assert any("recent sign-in" in item.lower() for item in plan["evidence"])
     assert any(link["label"] == "Microsoft Account Recovery" for link in plan["official_links"])
+
+
+def test_explicit_meta_incident_uses_incident_specific_playbook_and_links():
+    situation = {
+        "service": "Instagram",
+        "incident_id": "meta_account_hacked",
+        "account_state": "locked_suspicious_activity",
+        "role": "owner",
+    }
+
+    plan = generate_recovery_plan(situation)
+
+    assert plan["case_type"] == "suspicious_activity_lock"
+    assert plan["incident_id"] == "meta_account_hacked"
+    assert any("photo id" in item.lower() for item in plan["evidence"])
+    assert any(link["label"] == "Instagram Hacked Account" for link in plan["official_links"])
+    assert plan["knowledge_base"]["confidence"] == "medium"
+    assert any("recovery email or phone" in item.lower() for item in plan["common_mistakes"])
 
 
 def test_unsafe_intent_returns_refusal_without_procedural_steps():

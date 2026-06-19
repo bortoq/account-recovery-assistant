@@ -43,3 +43,6 @@ def test_cli_prints_markdown_report_when_requested():
     assert "## Checklist" in result.stdout
     assert "- Try backup codes" in result.stdout
     assert "Google Account Recovery" in result.stdout
+    assert "## Knowledge Freshness" in result.stdout
+    assert "## Common Mistakes To Avoid" in result.stdout
+    assert "## Source Notes" in result.stdout

@@ -66,6 +66,8 @@ The planner also uses `data/service_priorities.json` for aliases and official li
 
 The project now also exposes a normalized incident questionnaire layer for the first high-value web-wizard cases: Gmail MFA loss, Apple trusted-device loss, Meta account hacked, and Microsoft admin lockout.
 
+The recovery knowledge base now carries incident-specific metadata for those first web-wizard cases: ownership evidence, common mistakes to avoid, source notes, verification date, confidence level, and stale-content flags.
+
 ## Similar Projects And Difference
 
 - Passware, Lazesoft, Ophcrack, and John the Ripper recover or crack passwords for files, devices, and local systems. Account Recovery Assistant is different: it does not crack passwords. It guides users through official account recovery.

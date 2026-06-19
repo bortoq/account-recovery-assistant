@@ -11,6 +11,174 @@
     "Store recovery details in a trusted password manager.",
     "Document business admin access and recovery contacts."
   ],
+  "incident_records": {
+    "gmail_mfa_loss": {
+      "case_type": "lost_mfa_device",
+      "service_aliases": ["google", "gmail"],
+      "title": "Lost MFA device for a Google account",
+      "support_summary": "I lost access to my authenticator app for a Google account and need help through the official recovery flow.",
+      "last_verified_at": "2026-06-19",
+      "confidence": "high",
+      "stale": false,
+      "checklist": [
+        "Try backup codes before any other recovery path.",
+        "Check whether a trusted device is still signed in to the Google account.",
+        "Use the Google account recovery flow instead of repeated sign-in attempts.",
+        "Prepare device history, recovery email access, and account timeline details.",
+        "Wait for official recovery checkpoints instead of spamming the form."
+      ],
+      "ownership_evidence": [
+        "Backup codes if available.",
+        "Trusted device details and recent sign-in context.",
+        "Recovery email still under your control.",
+        "Approximate account creation date.",
+        "Recent Google subscription or billing records."
+      ],
+      "common_mistakes": [
+        "Submitting too many recovery attempts in a short period.",
+        "Trying random old passwords after the account starts challenging recovery.",
+        "Ignoring a trusted signed-in device that can confirm identity faster."
+      ],
+      "official_links": [
+        {
+          "label": "Google Account Recovery",
+          "url": "https://accounts.google.com/signin/recovery"
+        },
+        {
+          "label": "Google Help: Account Recovery",
+          "url": "https://support.google.com/accounts/answer/7682439"
+        }
+      ],
+      "source_notes": [
+        "Google recovery is strongest when the user stays consistent with devices, networks, and the official recovery flow.",
+        "Backup codes and existing trusted sessions should be used before more expensive recovery paths."
+      ]
+    },
+    "apple_trusted_device_loss": {
+      "case_type": "changed_phone_number",
+      "service_aliases": ["apple", "icloud", "apple id"],
+      "title": "Lost trusted device or trusted phone for Apple ID recovery",
+      "support_summary": "I lost access to a trusted Apple device or trusted phone number and need to recover access through Apple's official process.",
+      "last_verified_at": "2026-06-19",
+      "confidence": "high",
+      "stale": false,
+      "checklist": [
+        "Check whether any trusted Apple device is still signed in.",
+        "Try trusted phone or recovery email paths before starting a full account recovery wait period.",
+        "Use the official Apple recovery page and keep the same recovery context during review.",
+        "Prepare purchase, device, and account ownership details.",
+        "Do not remove old trusted numbers or devices until access is restored."
+      ],
+      "ownership_evidence": [
+        "Trusted device details.",
+        "Trusted phone details if still under your control.",
+        "Recovery email still under your control.",
+        "Proof of Apple device or account ownership.",
+        "Billing or subscription records."
+      ],
+      "common_mistakes": [
+        "Starting account recovery before checking a still-signed-in trusted Apple device.",
+        "Changing account details mid-recovery and resetting the trust signals.",
+        "Removing a trusted phone before the account is stable again."
+      ],
+      "official_links": [
+        {
+          "label": "Apple Account Recovery",
+          "url": "https://iforgot.apple.com/"
+        },
+        {
+          "label": "Apple Support: If you forgot your Apple Account password",
+          "url": "https://support.apple.com/en-us/102656"
+        }
+      ],
+      "source_notes": [
+        "Apple recovery often depends on trusted-device continuity and can involve waiting periods.",
+        "Proof tied to real Apple hardware and billing can strengthen the recovery path."
+      ]
+    },
+    "meta_account_hacked": {
+      "case_type": "suspicious_activity_lock",
+      "service_aliases": ["meta", "facebook", "instagram", "fb", "ig"],
+      "title": "Facebook or Instagram account hacked",
+      "support_summary": "The account appears compromised and I need to secure it through Meta's official hacked-account recovery flows.",
+      "last_verified_at": "2026-06-19",
+      "confidence": "medium",
+      "stale": false,
+      "checklist": [
+        "Stop repeated login attempts that may make the account look more suspicious.",
+        "Use the official hacked-account flow for Facebook or Instagram.",
+        "Check whether the attacker changed the email, phone, or profile details.",
+        "Prepare identity evidence before opening additional support requests.",
+        "After recovery, change the password and revoke suspicious sessions."
+      ],
+      "ownership_evidence": [
+        "Recovery email or phone details you still control.",
+        "Photo ID if the service requests it.",
+        "Recent profile details, usernames, and linked account history.",
+        "Business page, creator account, or ad account context if relevant."
+      ],
+      "common_mistakes": [
+        "Not checking whether the recovery email or phone was changed by the attacker.",
+        "Opening too many duplicate reports instead of following one official path.",
+        "Delaying password reset and session revocation after recovery."
+      ],
+      "official_links": [
+        {
+          "label": "Facebook Hacked Account",
+          "url": "https://www.facebook.com/hacked"
+        },
+        {
+          "label": "Instagram Hacked Account",
+          "url": "https://help.instagram.com/368191326593075"
+        }
+      ],
+      "source_notes": [
+        "Meta recovery often hinges on whether the original email or phone is still controlled by the owner.",
+        "Business and creator accounts need extra attention because compromise can spread into linked assets."
+      ]
+    },
+    "microsoft_admin_lockout": {
+      "case_type": "suspicious_activity_lock",
+      "service_aliases": ["microsoft", "outlook", "office 365", "microsoft 365", "azure", "entra"],
+      "title": "Microsoft admin or workspace lockout",
+      "support_summary": "I am trying to restore admin or workspace access through Microsoft's official business recovery procedures.",
+      "last_verified_at": "2026-06-19",
+      "confidence": "medium",
+      "stale": false,
+      "checklist": [
+        "Check whether another global admin still has working access.",
+        "Use the official Microsoft account recovery or business support path.",
+        "Prepare domain, tenant, billing, and admin history evidence.",
+        "Stop repeated sign-in attempts that can extend lockout or trigger extra review.",
+        "After recovery, create or verify break-glass admin access."
+      ],
+      "ownership_evidence": [
+        "Backup admin details if another admin exists.",
+        "Verified domain control evidence.",
+        "Billing, tenant, and subscription records.",
+        "Known admin history and recent sign-in context."
+      ],
+      "common_mistakes": [
+        "Treating a tenant admin lockout like a normal personal account reset.",
+        "Not checking whether another admin can recover the tenant faster.",
+        "Waiting until after the incident to create break-glass admin coverage."
+      ],
+      "official_links": [
+        {
+          "label": "Microsoft Account Recovery",
+          "url": "https://account.live.com/acsr"
+        },
+        {
+          "label": "Microsoft 365 Admin Help",
+          "url": "https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-support"
+        }
+      ],
+      "source_notes": [
+        "Business recovery is stronger when domain ownership and billing evidence are ready early.",
+        "Admin lockout needs business-grade recovery steps, not just consumer password reset behavior."
+      ]
+    }
+  },
   "playbooks": {
     "lost_mfa_device": {
       "support_summary": "I lost access to my authenticator app and need to use the official recovery flow.",

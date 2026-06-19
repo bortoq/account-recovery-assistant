@@ -38,6 +38,9 @@ PYTHONPATH=src python3 -m account_recovery_assistant --format markdown examples/
 - A step-by-step checklist
 - Evidence and documents to prepare
 - Official recovery links
+- Knowledge freshness metadata
+- Common mistakes to avoid
+- Source notes for the recovery path
 - A support message template
 - Post-recovery hardening steps
 - Safety warnings
@@ -53,6 +56,7 @@ It helps users:
 - collect stronger ownership evidence;
 - use official channels instead of unsafe shortcuts;
 - write support messages that do not look suspicious;
+- see whether the current playbook was recently verified or may need review;
 - reduce the chance of losing the account again after recovery.
 
 ## Real MVP Scenarios
