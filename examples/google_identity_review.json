@@ -1,0 +1,10 @@
+{
+  "service": "Google",
+  "incident_id": "gmail_mfa_loss",
+  "lost_factor": "authenticator_app",
+  "still_knows_password": false,
+  "has_backup_codes": false,
+  "has_recovery_email": false,
+  "has_trusted_device": false,
+  "role": "owner"
+}

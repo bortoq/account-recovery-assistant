@@ -128,6 +128,34 @@
             "Google starts rejecting consistent trusted-session recovery attempts."
           ],
           "expected_timeline": "same session if the trusted device still receives prompts or can reach account settings"
+        },
+        {
+          "id": "high_friction_identity_review",
+          "when": {
+            "still_knows_password": false,
+            "has_backup_codes": false,
+            "has_recovery_email": false,
+            "has_trusted_device": false
+          },
+          "next_best_action": "Use the Google recovery form as a high-friction identity review path and prepare the strongest account-history evidence you can before retrying.",
+          "prepare_now": [
+            "Approximate account creation date, older passwords, and the names of Google services used on the account.",
+            "Recent contacts, labels, or mailbox patterns you can consistently describe if Google prompts for history.",
+            "Any billing, YouTube, Google One, or Play purchase history linked to the account."
+          ],
+          "what_can_make_this_worse": [
+            "Trying to guess old passwords repeatedly after the account is already in recovery review.",
+            "Changing devices or networks between every recovery attempt.",
+            "Submitting weak or contradictory account history details."
+          ],
+          "escalate_when": [
+            "You can provide a consistent account history but the recovery form still fails repeatedly.",
+            "The account is a recovery anchor for other critical accounts and delays are causing cascading lockouts."
+          ],
+          "expected_timeline": "longer than normal because Google may rely almost entirely on identity and account-history signals",
+          "checklist_additions": [
+            "Expect identity review may take longer when no password, recovery email, or trusted device still works."
+          ]
         }
       ]
     },
@@ -187,7 +215,8 @@
         "what_can_make_this_worse": [
           "Resetting the recovery attempt from multiple devices or networks.",
           "Removing old trusted numbers or devices before the account is back under control.",
-          "Expecting Apple support to bypass the normal trust and waiting-period checks."
+          "Expecting Apple support to bypass the normal trust and waiting-period checks.",
+          "Starting account recovery without proof of purchase or other strong hardware evidence when Apple may ask for it."
         ],
         "escalate_when": [
           "The account recovery wait period starts and you still have no trusted factor available.",
@@ -195,7 +224,8 @@
         ],
         "expected_timeline": "often several days if Apple has to rely on account recovery instead of a live trusted factor",
         "checklist_additions": [
-          "Start only one stable recovery attempt and avoid resetting it from multiple devices."
+          "Start only one stable recovery attempt and avoid resetting it from multiple devices.",
+          "Gather hardware and subscription evidence before you trigger another recovery reset."
         ]
       },
       "decision_paths": [

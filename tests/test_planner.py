@@ -331,6 +331,83 @@ def test_google_backup_code_path_adds_post_recovery_cleanup_step():
     assert "replace the lost authenticator" in plan["support_message"].lower()
 
 
+def test_google_no_password_and_no_recovery_email_pushes_stricter_identity_path():
+    plan = generate_recovery_plan(
+        {
+            "service": "Google",
+            "incident_id": "gmail_mfa_loss",
+            "lost_factor": "authenticator_app",
+            "still_knows_password": False,
+            "has_backup_codes": False,
+            "has_recovery_email": False,
+            "has_trusted_device": False,
+            "role": "owner",
+        }
+    )
+
+    assert plan["decision_path_id"] == "high_friction_identity_review"
+    assert "recovery form" in plan["next_best_action"].lower()
+    assert any("account creation date" in item.lower() for item in plan["prepare_now"])
+    assert any("identity review may take longer" in item.lower() for item in plan["checklist"])
+
+
+def test_apple_no_purchase_proof_highlights_wait_risk_and_hardware_evidence_gap():
+    plan = generate_recovery_plan(
+        {
+            "service": "Apple",
+            "incident_id": "apple_trusted_device_loss",
+            "lost_factor": "phone_number",
+            "has_trusted_device": False,
+            "has_trusted_phone": False,
+            "has_purchase_proof": False,
+            "role": "owner",
+        }
+    )
+
+    assert plan["decision_path_id"] == "account_recovery_wait_period"
+    assert any("hardware and subscription evidence" in item.lower() for item in plan["checklist"])
+    assert any("proof of purchase" in item.lower() for item in plan["what_can_make_this_worse"])
+
+
+def test_meta_no_email_no_phone_uses_identity_recovery_path():
+    plan = generate_recovery_plan(
+        {
+            "service": "Facebook",
+            "incident_id": "meta_account_hacked",
+            "account_state": "locked_suspicious_activity",
+            "still_controls_email": False,
+            "still_controls_phone": False,
+            "has_photo_id": True,
+            "business_account": False,
+            "role": "owner",
+        }
+    )
+
+    assert plan["decision_path_id"] == "identity_review_path"
+    assert "identity verification" in plan["next_best_action"].lower()
+    assert any("old profile details" in item.lower() for item in plan["prepare_now"])
+    assert any("both the email and phone" in item.lower() for item in plan["escalate_when"])
+
+
+def test_microsoft_no_backup_admin_and_no_billing_relies_on_domain_support_path():
+    plan = generate_recovery_plan(
+        {
+            "service": "Microsoft",
+            "incident_id": "microsoft_admin_lockout",
+            "account_state": "locked_suspicious_activity",
+            "has_backup_admin": False,
+            "has_billing_access": False,
+            "domain_control": True,
+            "role": "owner",
+        }
+    )
+
+    assert plan["decision_path_id"] == "tenant_support_path"
+    assert "tenant, domain" in plan["next_best_action"].lower()
+    assert any("domain ownership" in item.lower() for item in plan["prepare_now"])
+    assert any("consumer support path" in item.lower() for item in plan["what_can_make_this_worse"])
+
+
 def test_unknown_incident_questionnaire_returns_key_error():
     try:
         get_incident_questionnaire("unknown_incident")

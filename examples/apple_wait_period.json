@@ -1,0 +1,9 @@
+{
+  "service": "Apple",
+  "incident_id": "apple_trusted_device_loss",
+  "lost_factor": "phone_number",
+  "has_trusted_device": false,
+  "has_trusted_phone": false,
+  "has_purchase_proof": true,
+  "role": "owner"
+}

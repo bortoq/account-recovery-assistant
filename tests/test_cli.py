@@ -69,3 +69,28 @@ def test_cli_prints_markdown_report_when_requested():
     assert "- Status: verified" in result.stdout
     assert "## Common Mistakes To Avoid" in result.stdout
     assert "## Source Notes" in result.stdout
+
+
+def test_cli_examples_cover_meta_and_microsoft_branches():
+    scenarios = [
+        ("examples/meta_business_takeover.json", "business_asset_takeover"),
+        ("examples/meta_identity_review.json", "identity_review_path"),
+        ("examples/microsoft_backup_admin.json", "backup_admin_available"),
+        ("examples/microsoft_domain_support.json", "tenant_support_path"),
+    ]
+
+    for path, expected_branch in scenarios:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "account_recovery_assistant",
+                path,
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        plan = json.loads(result.stdout)
+        assert plan["decision_path_id"] == expected_branch, path

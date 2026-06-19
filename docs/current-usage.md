@@ -33,6 +33,12 @@ Examples are already included:
 - `examples/lost_mfa.json`
 - `examples/changed_phone.json`
 - `examples/suspicious_lock.json`
+- `examples/google_identity_review.json`
+- `examples/apple_wait_period.json`
+- `examples/meta_business_takeover.json`
+- `examples/meta_identity_review.json`
+- `examples/microsoft_backup_admin.json`
+- `examples/microsoft_domain_support.json`
 
 Run JSON output:
 
@@ -101,6 +107,7 @@ Each incident now has:
 - a stable incident id;
 - a normalized questionnaire with `id`, `field`, `answer_type`, and `required`;
 - incident-specific `decision_paths` for the first recovery branches;
+- multiple answer-driven branches for the same incident where the recovery path materially changes;
 - incident-specific checklist, evidence, links, mistakes, and source notes;
 - knowledge freshness metadata with `last_verified_at`, `review_due_at`, `review_cadence_days`, `confidence`, `status`, and `stale`.
 

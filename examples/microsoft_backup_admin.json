@@ -1,0 +1,9 @@
+{
+  "service": "Microsoft",
+  "incident_id": "microsoft_admin_lockout",
+  "account_state": "locked_suspicious_activity",
+  "has_backup_admin": true,
+  "has_billing_access": true,
+  "domain_control": true,
+  "role": "owner"
+}

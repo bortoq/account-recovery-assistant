@@ -1,5 +1,9 @@
 # Account Recovery Assistant
 
+![Python](https://img.shields.io/badge/python-3.11%2B-3776AB)
+![Status](https://img.shields.io/badge/status-alpha-bb6c2f)
+![Surface](https://img.shields.io/badge/interface-CLI%20%2B%20Web-165d52)
+
 Account Recovery Assistant is a safe guide for people who lost access to an account, got stuck in multi-factor authentication, forgot recovery details, or need help using official recovery channels.
 
 ## Simple Description
@@ -58,6 +62,12 @@ Run tests:
 PYTHONPATH=src python3 -m pytest -v
 ```
 
+Build a package locally:
+
+```bash
+python3 -m build
+```
+
 Start the local web wizard:
 
 ```bash
@@ -75,6 +85,18 @@ Supported MVP scenarios:
 - lost MFA device;
 - changed phone number;
 - suspicious activity lock.
+
+Example inputs included in the repository:
+
+- `examples/lost_mfa.json`
+- `examples/changed_phone.json`
+- `examples/suspicious_lock.json`
+- `examples/google_identity_review.json`
+- `examples/apple_wait_period.json`
+- `examples/meta_business_takeover.json`
+- `examples/meta_identity_review.json`
+- `examples/microsoft_backup_admin.json`
+- `examples/microsoft_domain_support.json`
 
 The planner also uses `data/service_priorities.json` for aliases and official links for the first top-priority services, including Google/Gmail, Apple/iCloud, Facebook, Instagram, Microsoft/Outlook, X/Twitter, TikTok, Yahoo Mail, LinkedIn, and Telegram.
 
@@ -106,6 +128,8 @@ The current MVP now also produces first-approximation recovery guidance instead 
 - an `expected_timeline` estimate based on whether trusted factors still exist.
 
 That guidance is now driven by incident-specific `decision_paths` in `data/recovery_playbooks.json`, so the first four incidents can be deepened by updating the knowledge base instead of hardcoding every branch in Python.
+
+The current recovery engine already distinguishes several materially different first-pass branches inside the same incident, such as backup-code recovery vs. identity-review recovery for Google, or backup-admin recovery vs. tenant-support recovery for Microsoft.
 
 ## Similar Projects And Difference
 
@@ -146,5 +170,7 @@ See [docs/current-usage.md](docs/current-usage.md) for the current MVP workflow 
 See [docs/service-priorities.md](docs/service-priorities.md) for the first knowledge-base expansion plan.
 
 See [docs/knowledge-base-operations.md](docs/knowledge-base-operations.md) for the incident review policy and freshness contract.
+
+See [docs/releasing.md](docs/releasing.md) for package and release steps.
 
 See [roadmap.md](roadmap.md).

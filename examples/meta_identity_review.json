@@ -1,0 +1,10 @@
+{
+  "service": "Facebook",
+  "incident_id": "meta_account_hacked",
+  "account_state": "locked_suspicious_activity",
+  "still_controls_email": false,
+  "still_controls_phone": false,
+  "has_photo_id": true,
+  "business_account": false,
+  "role": "owner"
+}
