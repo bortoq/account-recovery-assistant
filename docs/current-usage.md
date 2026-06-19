@@ -75,8 +75,8 @@ It helps users:
 
 The most valuable next improvements are:
 
-- interactive questionnaire flow;
-- richer service-specific playbooks for Google, Apple, Meta, and Microsoft;
-- more readable report outputs;
-- broader top-priority account coverage;
-- better support for business and estate recovery cases.
+- mobile-friendly web wizard on top of the current engine;
+- richer incident-specific playbooks for Google, Apple, Meta, and Microsoft;
+- freshness tracking for knowledge-base entries with verification dates and confidence;
+- incident landing pages for real recovery search queries;
+- stronger business disaster cases such as lost admin access and account takeover response.
