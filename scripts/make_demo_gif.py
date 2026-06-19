@@ -111,8 +111,8 @@ def frame_incident_picker() -> Image.Image:
     card(draw, (640, 250, 1150, 420), "Apple trusted-device loss", "Trusted device, trusted phone, and account recovery wait period.")
     card(draw, (90, 450, 600, 620), "Meta account hacked", "Instagram/Facebook takeover, identity review, and business asset risk.")
     card(draw, (640, 450, 1150, 620), "Microsoft admin lockout", "Backup admin, tenant proof, and business support escalation.")
-    draw.text((92, 680), "Step 1 of 3", font=SMALL, fill=MUTED)
-    pill(draw, (190, 668, 356, 704), "Pick your incident")
+    draw.text((92, 692), "Step 1 of 3", font=SMALL, fill=MUTED)
+    pill(draw, (190, 680, 356, 716), "Pick your incident")
     return image
 
 
@@ -133,8 +133,8 @@ def frame_questionnaire() -> Image.Image:
         draw.text((112, y + 18), label, font=BODY, fill=INK)
         pill(draw, (850, y + 16, 1120, y + 52), answer, fill=ACCENT_SOFT, text_fill=ACCENT)
         y += 88
-    draw.text((92, 734), "Step 2 of 3", font=SMALL, fill=MUTED)
-    pill(draw, (190, 722, 428, 758), "Answer the questionnaire")
+    draw.text((92, 744), "Step 2 of 3", font=SMALL, fill=MUTED)
+    pill(draw, (190, 732, 428, 768), "Answer the questionnaire")
     return image
 
 
@@ -177,7 +177,7 @@ def frame_meta_warning() -> Image.Image:
     draw_header(draw, "The wizard also surfaces freshness warnings and business-asset risk where recovery quality is less certain.")
     checklist_panel(
         draw,
-        (90, 248, 1190, 360),
+        (90, 248, 1190, 376),
         "Needs Review Warning",
         [
             "This Meta incident record is marked needs_review.",
@@ -205,7 +205,7 @@ def main() -> None:
         gif_path,
         save_all=True,
         append_images=frames[1:],
-        duration=[1400, 1400, 1700, 1800],
+        duration=[4200, 4200, 5100, 5400],
         loop=0,
         optimize=True,
     )
