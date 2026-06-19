@@ -98,6 +98,8 @@ The main difference is safe navigation: understand the situation, collect proof,
 
 ## Documents
 
+See [docs/current-usage.md](docs/current-usage.md) for the current MVP workflow and user value.
+
 See [docs/service-priorities.md](docs/service-priorities.md) for the first knowledge-base expansion plan.
 
 See [roadmap.md](roadmap.md).
