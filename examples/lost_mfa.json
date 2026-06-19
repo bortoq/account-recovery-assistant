@@ -1,0 +1,7 @@
+{
+  "service": "Google",
+  "lost_factor": "authenticator_app",
+  "still_knows_password": true,
+  "has_backup_codes": true,
+  "role": "owner"
+}

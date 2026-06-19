@@ -34,6 +34,28 @@ The product must only help the rightful owner or an authorized representative. I
 - List of documents and proof to prepare
 - Post-recovery security checklist: backup codes, passkeys, recovery contacts, and password manager setup
 
+## Current Prototype
+
+The first prototype is a small Python CLI and core library. It reads a JSON situation file and prints a safe recovery plan as JSON.
+
+Run an example:
+
+```bash
+PYTHONPATH=src python3 -m account_recovery_assistant examples/lost_mfa.json
+```
+
+Run tests:
+
+```bash
+PYTHONPATH=src python3 -m pytest -v
+```
+
+Supported MVP scenarios:
+
+- lost MFA device;
+- changed phone number;
+- suspicious activity lock.
+
 ## Similar Projects And Difference
 
 - Passware, Lazesoft, Ophcrack, and John the Ripper recover or crack passwords for files, devices, and local systems. Account Recovery Assistant is different: it does not crack passwords. It guides users through official account recovery.

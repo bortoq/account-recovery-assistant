@@ -1,0 +1,8 @@
+{
+  "service": "Apple",
+  "lost_factor": "phone_number",
+  "still_knows_password": true,
+  "has_recovery_email": true,
+  "has_trusted_device": true,
+  "role": "owner"
+}

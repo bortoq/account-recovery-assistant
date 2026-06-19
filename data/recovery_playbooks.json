@@ -1,0 +1,143 @@
+{
+  "safety_warnings": [
+    "This plan is not a guarantee of recovery.",
+    "Use only official recovery channels.",
+    "Do not try to bypass MFA, guess passwords, phish, or access accounts without authorization."
+  ],
+  "hardening_steps": [
+    "Generate and safely store new backup codes.",
+    "Add a passkey where the service supports it.",
+    "Update recovery email and phone number.",
+    "Store recovery details in a trusted password manager.",
+    "Document business admin access and recovery contacts."
+  ],
+  "playbooks": {
+    "lost_mfa_device": {
+      "support_summary": "I lost access to my authenticator app and need to use the official recovery flow.",
+      "checklist": [
+        "Try backup codes before any other recovery path.",
+        "Check whether a trusted device is still signed in.",
+        "Use the official account recovery page for the service.",
+        "Prepare identity, billing, device, or account ownership evidence.",
+        "Avoid repeated random attempts that can increase lockout risk."
+      ],
+      "evidence": [
+        "Backup codes if available.",
+        "Trusted device details.",
+        "Recent billing or subscription records.",
+        "Approximate account creation date.",
+        "Recovery email or recovery phone still under your control."
+      ],
+      "default_official_links": [
+        {
+          "label": "Generic Account Recovery",
+          "url": "https://support.google.com/accounts/answer/7682439"
+        }
+      ],
+      "official_links_by_service": {
+        "google": [
+          {
+            "label": "Google Account Recovery",
+            "url": "https://accounts.google.com/signin/recovery"
+          }
+        ],
+        "apple": [
+          {
+            "label": "Apple Account Recovery",
+            "url": "https://iforgot.apple.com/"
+          }
+        ],
+        "microsoft": [
+          {
+            "label": "Microsoft Account Recovery",
+            "url": "https://account.live.com/acsr"
+          }
+        ]
+      }
+    },
+    "changed_phone_number": {
+      "support_summary": "My recovery phone number changed, and I need to recover access through official alternatives.",
+      "checklist": [
+        "Try recovery email before requesting manual review.",
+        "Check trusted device recovery options.",
+        "Update the phone number only after access is restored.",
+        "Prepare proof that the account and old phone number belonged to you."
+      ],
+      "evidence": [
+        "Recovery email still under your control.",
+        "Trusted device details.",
+        "Old and new phone number context.",
+        "Billing records or account history."
+      ],
+      "default_official_links": [
+        {
+          "label": "Generic Account Recovery",
+          "url": "https://support.google.com/accounts/answer/7682439"
+        }
+      ],
+      "official_links_by_service": {
+        "apple": [
+          {
+            "label": "Apple Account Recovery",
+            "url": "https://iforgot.apple.com/"
+          }
+        ],
+        "google": [
+          {
+            "label": "Google Account Recovery",
+            "url": "https://accounts.google.com/signin/recovery"
+          }
+        ],
+        "microsoft": [
+          {
+            "label": "Microsoft Account Recovery",
+            "url": "https://account.live.com/acsr"
+          }
+        ]
+      }
+    },
+    "suspicious_activity_lock": {
+      "support_summary": "My account was locked after suspicious activity, and I need to prove ownership safely.",
+      "checklist": [
+        "Stop repeated login attempts that may extend the lockout.",
+        "Use the official locked-account or account recovery flow.",
+        "Review recent sign-in activity if any trusted device is still logged in.",
+        "Prepare ownership evidence before contacting support.",
+        "After recovery, change the password and revoke suspicious sessions."
+      ],
+      "evidence": [
+        "Recent sign-in locations you recognize.",
+        "Recent sign-in attempts you do not recognize.",
+        "Trusted devices.",
+        "Billing records or subscription receipts.",
+        "Recovery email or phone details."
+      ],
+      "default_official_links": [
+        {
+          "label": "Generic Account Recovery",
+          "url": "https://support.google.com/accounts/answer/7682439"
+        }
+      ],
+      "official_links_by_service": {
+        "microsoft": [
+          {
+            "label": "Microsoft Account Recovery",
+            "url": "https://account.live.com/acsr"
+          }
+        ],
+        "google": [
+          {
+            "label": "Google Account Recovery",
+            "url": "https://accounts.google.com/signin/recovery"
+          }
+        ],
+        "apple": [
+          {
+            "label": "Apple Account Recovery",
+            "url": "https://iforgot.apple.com/"
+          }
+        ]
+      }
+    }
+  }
+}
