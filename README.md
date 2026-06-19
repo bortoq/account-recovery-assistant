@@ -3,6 +3,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB)
 ![Status](https://img.shields.io/badge/status-alpha-bb6c2f)
 ![Surface](https://img.shields.io/badge/interface-CLI%20%2B%20Web-165d52)
+[![PyPI version](https://img.shields.io/pypi/v/account-recovery-assistant.svg)](https://pypi.org/project/account-recovery-assistant/)
 
 Account Recovery Assistant is a safe guide for people who lost access to an account, got stuck in multi-factor authentication, forgot recovery details, or need help using official recovery channels.
 
