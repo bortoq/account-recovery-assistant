@@ -6,6 +6,7 @@ from typing import Any
 
 from .planner import generate_recovery_plan
 from .report import render_markdown
+from .web import serve
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -13,14 +14,24 @@ def main(argv: list[str] | None = None) -> int:
         prog="account-recovery-assistant",
         description="Generate a safe account recovery plan from a JSON situation file.",
     )
-    parser.add_argument("situation", help="Path to a JSON file describing the recovery situation.")
+    parser.add_argument("situation", nargs="?", help="Path to a JSON file describing the recovery situation.")
     parser.add_argument(
         "--format",
         choices=("json", "markdown"),
         default="json",
         help="Output format.",
     )
+    parser.add_argument("--serve-web", action="store_true", help="Start the local web wizard.")
+    parser.add_argument("--host", default="127.0.0.1", help="Host for the local web wizard.")
+    parser.add_argument("--port", type=int, default=8000, help="Port for the local web wizard.")
     args = parser.parse_args(argv)
+
+    if args.serve_web:
+        serve(host=args.host, port=args.port)
+        return 0
+
+    if not args.situation:
+        raise SystemExit("Situation JSON path is required unless --serve-web is used.")
 
     situation = _read_json(Path(args.situation))
     plan = generate_recovery_plan(situation)

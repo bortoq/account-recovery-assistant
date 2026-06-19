@@ -38,6 +38,8 @@ The product must only help the rightful owner or an authorized representative. I
 
 The first prototype is a small Python CLI and core library. It reads a JSON situation file and prints a safe recovery plan as JSON.
 
+The project now also includes a local web wizard on top of the same engine for the first four canonical incidents.
+
 Run an example:
 
 ```bash
@@ -56,6 +58,18 @@ Run tests:
 PYTHONPATH=src python3 -m pytest -v
 ```
 
+Start the local web wizard:
+
+```bash
+PYTHONPATH=src python3 -m account_recovery_assistant --serve-web
+```
+
+Or directly:
+
+```bash
+PYTHONPATH=src python3 -m account_recovery_assistant.web
+```
+
 Supported MVP scenarios:
 
 - lost MFA device;
@@ -66,7 +80,32 @@ The planner also uses `data/service_priorities.json` for aliases and official li
 
 The project now also exposes a normalized incident questionnaire layer for the first high-value web-wizard cases: Gmail MFA loss, Apple trusted-device loss, Meta account hacked, and Microsoft admin lockout.
 
-The recovery knowledge base now carries incident-specific metadata for those first web-wizard cases: ownership evidence, common mistakes to avoid, source notes, verification date, confidence level, and stale-content flags.
+Each of those first incidents now uses a shared questionnaire contract with stable `id`, `field`, `answer_type`, and `required` keys so the same flow can drive the CLI today and a future web wizard later.
+
+The recovery knowledge base now carries incident-specific metadata for those first web-wizard cases: ownership evidence, common mistakes to avoid, source notes, verification date, review due date, review cadence, confidence level, and explicit review status.
+
+The Phase 2 and Phase 3 foundation is now product-oriented rather than purely exploratory:
+
+- the first four incidents are canonical and exposed through a normalized questionnaire contract;
+- incident-specific plans include questionnaire metadata, so a wizard can render the same entry flow and plan output consistently;
+- knowledge-base entries now declare `verified`, `needs_review`, or fallback `unverified` status, with explicit 30-day review cadence metadata.
+
+Phase 4 is now started as a local web product surface:
+
+- a mobile-friendly incident picker;
+- a browser questionnaire flow for the first four canonical incidents;
+- a plan screen that surfaces checklist, evidence, official links, support message, hardening steps, and knowledge freshness warnings.
+
+The current MVP now also produces first-approximation recovery guidance instead of only generic checklists:
+
+- a `next_best_action` for the chosen incident and answer path;
+- a `decision_path_id` that shows which incident branch was selected;
+- a `prepare_now` list focused on evidence and context to gather before retrying;
+- a `what_can_make_this_worse` list to reduce lockout and support-review mistakes;
+- an `escalate_when` list for cases where official recovery is stalling;
+- an `expected_timeline` estimate based on whether trusted factors still exist.
+
+That guidance is now driven by incident-specific `decision_paths` in `data/recovery_playbooks.json`, so the first four incidents can be deepened by updating the knowledge base instead of hardcoding every branch in Python.
 
 ## Similar Projects And Difference
 
@@ -105,5 +144,7 @@ The main difference is safe navigation: understand the situation, collect proof,
 See [docs/current-usage.md](docs/current-usage.md) for the current MVP workflow and user value.
 
 See [docs/service-priorities.md](docs/service-priorities.md) for the first knowledge-base expansion plan.
+
+See [docs/knowledge-base-operations.md](docs/knowledge-base-operations.md) for the incident review policy and freshness contract.
 
 See [roadmap.md](roadmap.md).

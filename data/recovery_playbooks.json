@@ -18,7 +18,10 @@
       "title": "Lost MFA device for a Google account",
       "support_summary": "I lost access to my authenticator app for a Google account and need help through the official recovery flow.",
       "last_verified_at": "2026-06-19",
+      "review_due_at": "2026-07-19",
+      "review_cadence_days": 30,
       "confidence": "high",
+      "status": "verified",
       "stale": false,
       "checklist": [
         "Try backup codes before any other recovery path.",
@@ -52,6 +55,80 @@
       "source_notes": [
         "Google recovery is strongest when the user stays consistent with devices, networks, and the official recovery flow.",
         "Backup codes and existing trusted sessions should be used before more expensive recovery paths."
+      ],
+      "default_guidance": {
+        "id": "google_recovery_context",
+        "next_best_action": "Use the Google account recovery page from a familiar device context and answer every prompt consistently instead of experimenting with multiple paths.",
+        "prepare_now": [
+          "The same device, same browser, and same network you normally used with the account.",
+          "Recovery email access and recent account activity details.",
+          "A short account timeline including when MFA access was lost."
+        ],
+        "what_can_make_this_worse": [
+          "Too many recovery attempts from different devices, browsers, or networks.",
+          "Submitting different stories or different account details across retries.",
+          "Ignoring a still-working recovery email path while forcing manual review."
+        ],
+        "escalate_when": [
+          "The recovery form keeps failing after you try from the same browser, same network, and a stable account timeline.",
+          "You lose control of the recovery email during the recovery process."
+        ],
+        "expected_timeline": "often hours to several days if Google has to rely on account history instead of a live trusted factor",
+        "checklist_additions": [
+          "Stay on the same browser and recovery context until Google finishes the review."
+        ]
+      },
+      "decision_paths": [
+        {
+          "id": "backup_codes_available",
+          "when": {
+            "has_backup_codes": true
+          },
+          "next_best_action": "Use a backup code first, then immediately remove the lost authenticator method and enroll a new second factor.",
+          "prepare_now": [
+            "The backup code set or a secure copy of it.",
+            "A trusted signed-in device or browser session in case Google asks for confirmation.",
+            "Your recovery email and recent Google billing or subscription context."
+          ],
+          "what_can_make_this_worse": [
+            "Burning multiple backup codes without finishing account recovery and re-enrollment.",
+            "Too many recovery attempts after a backup code path already works.",
+            "Removing the wrong device before you verify access is fully restored."
+          ],
+          "escalate_when": [
+            "A backup code is rejected even though it was never used and the account details match.",
+            "The account opens but you still cannot remove the lost MFA method."
+          ],
+          "expected_timeline": "immediate if backup codes or a trusted session still work",
+          "checklist_additions": [
+            "Generate fresh backup codes after sign-in succeeds.",
+            "Remove the lost authenticator from the account before you sign out."
+          ],
+          "support_summary_addition": "Once access is restored, I need to replace the lost authenticator and generate fresh backup codes."
+        },
+        {
+          "id": "trusted_device_still_signed_in",
+          "when": {
+            "has_backup_codes": false,
+            "has_trusted_device": true
+          },
+          "next_best_action": "Use the trusted signed-in device to confirm the login and replace the lost authenticator method before trying broader recovery.",
+          "prepare_now": [
+            "The exact device and browser that still has a working Google session.",
+            "Your recovery email and approximate account creation period.",
+            "Recent Google billing or subscription details."
+          ],
+          "what_can_make_this_worse": [
+            "Signing out of the last trusted session before the account is stable again.",
+            "Trying random passwords or repeated recovery attempts from new devices.",
+            "Changing recovery details before MFA access is restored."
+          ],
+          "escalate_when": [
+            "The trusted device no longer offers a confirmation or recovery option.",
+            "Google starts rejecting consistent trusted-session recovery attempts."
+          ],
+          "expected_timeline": "same session if the trusted device still receives prompts or can reach account settings"
+        }
       ]
     },
     "apple_trusted_device_loss": {
@@ -60,7 +137,10 @@
       "title": "Lost trusted device or trusted phone for Apple ID recovery",
       "support_summary": "I lost access to a trusted Apple device or trusted phone number and need to recover access through Apple's official process.",
       "last_verified_at": "2026-06-19",
+      "review_due_at": "2026-07-19",
+      "review_cadence_days": 30,
       "confidence": "high",
+      "status": "verified",
       "stale": false,
       "checklist": [
         "Check whether any trusted Apple device is still signed in.",
@@ -94,6 +174,76 @@
       "source_notes": [
         "Apple recovery often depends on trusted-device continuity and can involve waiting periods.",
         "Proof tied to real Apple hardware and billing can strengthen the recovery path."
+      ],
+      "default_guidance": {
+        "id": "account_recovery_wait_period",
+        "next_best_action": "Start Apple account recovery only after you gather device ownership proof and commit to one stable recovery path.",
+        "prepare_now": [
+          "Any Apple device serials, receipts, or subscription records tied to the account.",
+          "Your Apple ID email, old trusted phone details, and approximate device timeline.",
+          "A stable device and network for Apple account recovery review.",
+          "Proof of purchase for Apple hardware linked to the account."
+        ],
+        "what_can_make_this_worse": [
+          "Resetting the recovery attempt from multiple devices or networks.",
+          "Removing old trusted numbers or devices before the account is back under control.",
+          "Expecting Apple support to bypass the normal trust and waiting-period checks."
+        ],
+        "escalate_when": [
+          "The account recovery wait period starts and you still have no trusted factor available.",
+          "You can prove device ownership but Apple recovery never progresses."
+        ],
+        "expected_timeline": "often several days if Apple has to rely on account recovery instead of a live trusted factor",
+        "checklist_additions": [
+          "Start only one stable recovery attempt and avoid resetting it from multiple devices."
+        ]
+      },
+      "decision_paths": [
+        {
+          "id": "trusted_device_available",
+          "when": {
+            "has_trusted_device": true
+          },
+          "next_best_action": "Use the trusted device to regain control, confirm your Apple ID settings, and add or verify a working trusted number before starting full account recovery.",
+          "prepare_now": [
+            "The trusted device passcode and physical access to the device.",
+            "Your trusted phone number details and recovery email access.",
+            "Apple device purchase or subscription records in case recovery expands."
+          ],
+          "what_can_make_this_worse": [
+            "Starting full account recovery before checking a still-signed-in trusted device.",
+            "Removing trusted numbers or devices while recovery is still in progress.",
+            "Switching between multiple Apple IDs during recovery."
+          ],
+          "escalate_when": [
+            "The trusted device is signed in but cannot approve security changes.",
+            "Apple pushes you into an account recovery wait period despite a working trusted device."
+          ],
+          "expected_timeline": "same day if the trusted device can still approve Apple ID security changes"
+        },
+        {
+          "id": "trusted_phone_available",
+          "when": {
+            "has_trusted_device": false,
+            "has_trusted_phone": true
+          },
+          "next_best_action": "Use the trusted phone-linked recovery path before you start a longer Apple account recovery process.",
+          "prepare_now": [
+            "Your trusted phone with working SMS or call access.",
+            "Any Apple hardware serials, receipts, or subscription records.",
+            "Your Apple ID email and recent device usage history."
+          ],
+          "what_can_make_this_worse": [
+            "Removing the last trusted phone number before access is restored.",
+            "Restarting the Apple recovery flow from multiple devices.",
+            "Editing account details in the middle of a pending review."
+          ],
+          "escalate_when": [
+            "The trusted phone path stops working and Apple moves you into an account recovery wait period.",
+            "You suspect the trusted number itself is no longer under your control."
+          ],
+          "expected_timeline": "same day if the trusted phone number still receives Apple verification prompts"
+        }
       ]
     },
     "meta_account_hacked": {
@@ -101,9 +251,12 @@
       "service_aliases": ["meta", "facebook", "instagram", "fb", "ig"],
       "title": "Facebook or Instagram account hacked",
       "support_summary": "The account appears compromised and I need to secure it through Meta's official hacked-account recovery flows.",
-      "last_verified_at": "2026-06-19",
+      "last_verified_at": "2026-05-15",
+      "review_due_at": "2026-06-14",
+      "review_cadence_days": 30,
       "confidence": "medium",
-      "stale": false,
+      "status": "needs_review",
+      "stale": true,
       "checklist": [
         "Stop repeated login attempts that may make the account look more suspicious.",
         "Use the official hacked-account flow for Facebook or Instagram.",
@@ -135,6 +288,67 @@
       "source_notes": [
         "Meta recovery often hinges on whether the original email or phone is still controlled by the owner.",
         "Business and creator accounts need extra attention because compromise can spread into linked assets."
+      ],
+      "default_guidance": {
+        "id": "identity_review_path",
+        "next_best_action": "Use Meta's hacked-account flow and prepare for identity verification because you no longer control the original login factors.",
+        "prepare_now": [
+          "Your current profile handle, old profile details, and the approximate time the takeover started.",
+          "Screenshots or notes showing changed email, changed phone, or changed profile details.",
+          "A photo ID that matches the account identity if Meta requests identity verification."
+        ],
+        "what_can_make_this_worse": [
+          "Opening too many duplicate reports instead of following one hacked-account flow to completion.",
+          "Resetting passwords repeatedly before you understand whether the attacker changed the recovery factors.",
+          "Ignoring the security of the linked email account while trying to recover Meta access."
+        ],
+        "escalate_when": [
+          "The attacker changed both the email and phone and the normal hacked-account flow no longer recognizes you.",
+          "Meta asks for identity proof but the account remains locked after you provide it."
+        ],
+        "expected_timeline": "same day to several days depending on whether you still control one original recovery factor or need identity review"
+      },
+      "decision_paths": [
+        {
+          "id": "business_asset_takeover",
+          "when": {
+            "business_account": true
+          },
+          "next_best_action": "Use the phone-linked recovery route in Meta's hacked-account flow before opening duplicate reports.",
+          "prepare_now": [
+            "A list of linked business page, creator, or ad account assets that could also be affected.",
+            "Your current profile handle, old profile details, and the approximate time the takeover started.",
+            "A photo ID that matches the account identity if Meta requests identity verification."
+          ],
+          "what_can_make_this_worse": [
+            "Opening too many duplicate reports instead of following one hacked-account flow to completion.",
+            "Delaying session revocation while the attacker still controls linked business assets.",
+            "Ignoring the security of the linked email account while trying to recover Meta access."
+          ],
+          "escalate_when": [
+            "Meta asks for identity proof but the account remains locked after you provide it.",
+            "Linked business assets such as a business page or ad account also show attacker control."
+          ],
+          "expected_timeline": "same day to several days depending on whether you still control one original recovery factor or need identity review",
+          "checklist_additions": [
+            "Document suspicious sessions and linked business assets before making security changes."
+          ]
+        },
+        {
+          "id": "email_controlled_path",
+          "when": {
+            "still_controls_email": true
+          },
+          "next_best_action": "Use the hacked-account flow from the original email-linked path and secure that email account first."
+        },
+        {
+          "id": "phone_recovery_path",
+          "when": {
+            "still_controls_email": false,
+            "still_controls_phone": true
+          },
+          "next_best_action": "Use the phone-linked recovery route in Meta's hacked-account flow before opening duplicate reports."
+        }
       ]
     },
     "microsoft_admin_lockout": {
@@ -143,7 +357,10 @@
       "title": "Microsoft admin or workspace lockout",
       "support_summary": "I am trying to restore admin or workspace access through Microsoft's official business recovery procedures.",
       "last_verified_at": "2026-06-19",
+      "review_due_at": "2026-07-19",
+      "review_cadence_days": 30,
       "confidence": "medium",
+      "status": "verified",
       "stale": false,
       "checklist": [
         "Check whether another global admin still has working access.",
@@ -176,6 +393,44 @@
       "source_notes": [
         "Business recovery is stronger when domain ownership and billing evidence are ready early.",
         "Admin lockout needs business-grade recovery steps, not just consumer password reset behavior."
+      ],
+      "default_guidance": {
+        "id": "tenant_support_path",
+        "next_best_action": "Open the Microsoft business support path and lead with tenant, domain, and billing proof instead of retrying consumer-style password recovery.",
+        "prepare_now": [
+          "Your tenant name, known admin identities, and recent sign-in or lockout timeline.",
+          "Domain ownership and tenant evidence that can be shown through official support.",
+          "Recent Microsoft billing, subscription, or invoice records tied to the tenant."
+        ],
+        "what_can_make_this_worse": [
+          "Using repeated sign-in attempts that keep extending the lockout or risk controls.",
+          "Opening the wrong consumer support path for a tenant admin incident.",
+          "Trying to change domain or billing details before identity is stabilized."
+        ],
+        "escalate_when": [
+          "No backup admin exists and official support cannot validate ownership from tenant, domain, and billing evidence.",
+          "You restore access but still have no break-glass admin plan for the next outage."
+        ],
+        "expected_timeline": "often same day to several days depending on support validation and whether domain or billing proof is immediately available"
+      },
+      "decision_paths": [
+        {
+          "id": "backup_admin_available",
+          "when": {
+            "has_backup_admin": true
+          },
+          "next_best_action": "Use the backup admin path first and have that admin reset access or open the Microsoft support case from inside the tenant.",
+          "what_can_make_this_worse": [
+            "Treating a tenant lockout like a consumer password reset and ignoring the backup admin.",
+            "Locking out the remaining admin by repeated failed sign-ins.",
+            "Delaying emergency admin cleanup after one admin regains access."
+          ],
+          "escalate_when": [
+            "The backup admin can sign in but cannot restore the locked admin or create a break-glass admin account.",
+            "You regain access but still have no break-glass admin coverage for the next incident."
+          ],
+          "expected_timeline": "same day if another admin can still access the tenant"
+        }
       ]
     }
   },

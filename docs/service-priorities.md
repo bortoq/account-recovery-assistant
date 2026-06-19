@@ -46,3 +46,18 @@ Each service should eventually have a JSON playbook with:
 - post-recovery hardening steps.
 
 Do not add unofficial hacks, bypasses, or social-engineering tactics. If a service procedure is unclear, link to the official help center and mark the detailed flow as unverified.
+
+## Current Product-Ready Incident Set
+
+Before broader service expansion, the first canonical incident set is now:
+
+- Gmail MFA loss
+- Apple trusted-device loss
+- Meta account hacked
+- Microsoft admin lockout
+
+These four incidents now form the stable pre-web contract for:
+
+- questionnaire rendering;
+- incident-to-plan mapping;
+- knowledge freshness and review metadata.
