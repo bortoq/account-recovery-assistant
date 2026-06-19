@@ -90,4 +90,6 @@ The main difference is safe navigation: understand the situation, collect proof,
 
 ## Documents
 
+See [docs/service-priorities.md](docs/service-priorities.md) for the first knowledge-base expansion plan.
+
 See [roadmap.md](roadmap.md).
