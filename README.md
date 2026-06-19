@@ -48,6 +48,23 @@ PYTHONPATH=src python3 -m account_recovery_assistant --serve-web
 # Open http://127.0.0.1:8000
 ```
 
+
+### Library Usage
+
+If you call the Python library directly, validate user input before generating a plan:
+
+```python
+from account_recovery_assistant import generate_recovery_plan
+from account_recovery_assistant.validation import validate_situation
+
+situation = validate_situation({
+    "service": "Google",
+    "lost_factor": "authenticator_app",
+    "role": "owner",
+})
+plan = generate_recovery_plan(situation)
+```
+
 ---
 
 ## Supported Incidents (MVP)
@@ -55,7 +72,7 @@ PYTHONPATH=src python3 -m account_recovery_assistant --serve-web
 | Service | Incident | Example file |
 |---------|----------|-------------|
 | Google | Lost MFA device (authenticator app) | `examples/lost_mfa.json` |
-| Apple | Lost trusted device or trusted phone | — |
+| Apple | Lost trusted device or trusted phone | `examples/apple_wait_period.json` |
 | Meta (FB/IG) | Account hacked | `examples/meta_business_takeover.json` |
 | Microsoft | Admin or workspace lockout | `examples/microsoft_backup_admin.json` |
 

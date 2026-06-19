@@ -117,12 +117,26 @@ function listHtml(items, render = (item) => escapeHtml(item)) {
   return `<ul>${items.map((item) => `<li>${render(item)}</li>`).join("")}</ul>`;
 }
 
-function markdownList(items) {
+function markdownList(items = []) {
   return items.map((item) => `- ${item}`).join("\n");
 }
 
-function markdownLinks(items) {
+function markdownLinks(items = []) {
   return items.map((item) => `- [${item.label}](${item.url})`).join("\n");
+}
+
+function knowledgeFreshnessMarkdown(knowledgeBase) {
+  if (!knowledgeBase) {
+    return "- Last verified: Unknown\n- Review due: Unknown\n- Review cadence: Unknown days\n- Confidence: unknown\n- Status: unknown\n- Stale: unknown";
+  }
+  return markdownList([
+    `Last verified: ${knowledgeBase.last_verified_at || "Unknown"}`,
+    `Review due: ${knowledgeBase.review_due_at || "Unknown"}`,
+    `Review cadence: ${knowledgeBase.review_cadence_days || "Unknown"} days`,
+    `Confidence: ${knowledgeBase.confidence}`,
+    `Status: ${knowledgeBase.status}`,
+    `Stale: ${knowledgeBase.stale ? "yes" : "no"}`,
+  ]);
 }
 
 function planToMarkdown(plan) {
@@ -132,6 +146,7 @@ function planToMarkdown(plan) {
     `Service: ${plan.service}`,
     `Case type: ${plan.case_type}`,
     `Incident: ${plan.incident_title || "General recovery case"}`,
+    `Decision path: ${plan.decision_path_id || "unknown"}`,
     "",
     "## Next Best Action",
     "",
@@ -163,9 +178,21 @@ function planToMarkdown(plan) {
     "",
     markdownLinks(plan.official_links),
     "",
+    "## Knowledge Freshness",
+    "",
+    knowledgeFreshnessMarkdown(plan.knowledge_base),
+    "",
+    "## Common Mistakes To Avoid",
+    "",
+    markdownList(plan.common_mistakes),
+    "",
     "## Support Message",
     "",
     plan.support_message,
+    "",
+    "## Source Notes",
+    "",
+    markdownList(plan.source_notes),
     "",
     "## Post-Recovery Hardening",
     "",
@@ -286,6 +313,16 @@ function renderPlan(plan) {
         <h3>Safety Warnings</h3>
         ${listHtml(plan.safety_warnings)}
       </section>
+      <section class="plan-section">
+        <h3>Feedback</h3>
+        <p class="muted">No feedback is sent anywhere in this local alpha; these buttons only help you track your outcome during the session.</p>
+        <div class="actions">
+          <button type="button" id="feedback-recovered">I recovered access</button>
+          <button type="button" id="feedback-stuck">I'm still stuck</button>
+          <button type="button" id="feedback-link-worked">Official link worked</button>
+          <button type="button" id="feedback-link-failed">Official link didn't work</button>
+        </div>
+      </section>
       <div class="actions">
         <button type="button" id="copy-support-message">Copy Support Message</button>
         <button type="button" id="download-markdown">Download Markdown</button>
@@ -300,6 +337,18 @@ function renderPlan(plan) {
   });
   wizardNode.querySelector("#download-markdown").addEventListener("click", () => {
     downloadText("account-recovery-plan.md", planToMarkdown(plan));
+  });
+  wizardNode.querySelector("#feedback-recovered").addEventListener("click", () => {
+    statusNode.textContent = "Feedback noted locally: access recovered.";
+  });
+  wizardNode.querySelector("#feedback-stuck").addEventListener("click", () => {
+    statusNode.textContent = "Feedback noted locally: still stuck. Re-check official links and escalation triggers.";
+  });
+  wizardNode.querySelector("#feedback-link-worked").addEventListener("click", () => {
+    statusNode.textContent = "Feedback noted locally: official link worked.";
+  });
+  wizardNode.querySelector("#feedback-link-failed").addEventListener("click", () => {
+    statusNode.textContent = "Feedback noted locally: official link did not work. Re-check the provider help center.";
   });
   wizardNode.querySelector("#start-over").addEventListener("click", init);
 }

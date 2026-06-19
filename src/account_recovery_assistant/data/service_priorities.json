@@ -3,7 +3,10 @@
     {
       "priority": 1,
       "service": "Google / Gmail",
-      "aliases": ["google", "gmail"],
+      "aliases": [
+        "google",
+        "gmail"
+      ],
       "criticality": "high",
       "recovery_complexity": "high",
       "recommended_focus": "Detailed playbook for lost MFA, lost recovery phone/email, suspicious activity locks, and account takeover.",
@@ -21,7 +24,11 @@
     {
       "priority": 2,
       "service": "Apple ID / iCloud",
-      "aliases": ["apple", "icloud", "apple id"],
+      "aliases": [
+        "apple",
+        "icloud",
+        "apple id"
+      ],
       "criticality": "high",
       "recovery_complexity": "high",
       "recommended_focus": "Trusted devices, trusted phone numbers, account recovery waiting period, and device ownership evidence.",
@@ -39,7 +46,10 @@
     {
       "priority": 3,
       "service": "Facebook",
-      "aliases": ["facebook", "meta"],
+      "aliases": [
+        "facebook",
+        "meta"
+      ],
       "criticality": "high",
       "recovery_complexity": "medium-high",
       "recommended_focus": "Hacked accounts, business pages, identity checks, and connected Instagram/Meta accounts.",
@@ -57,7 +67,10 @@
     {
       "priority": 4,
       "service": "Instagram",
-      "aliases": ["instagram", "ig"],
+      "aliases": [
+        "instagram",
+        "ig"
+      ],
       "criticality": "high",
       "recovery_complexity": "medium",
       "recommended_focus": "Hacked accounts, identity verification, linked Facebook accounts, and creator/business profile recovery.",
@@ -75,7 +88,12 @@
     {
       "priority": 5,
       "service": "Microsoft / Outlook / Hotmail",
-      "aliases": ["microsoft", "outlook", "hotmail", "live"],
+      "aliases": [
+        "microsoft",
+        "outlook",
+        "hotmail",
+        "live"
+      ],
       "criticality": "high",
       "recovery_complexity": "medium",
       "recommended_focus": "Personal Microsoft accounts, Outlook mail, OneDrive, Microsoft 365, and business admin recovery escalation.",
@@ -93,25 +111,37 @@
     {
       "priority": 6,
       "service": "X / Twitter",
-      "aliases": ["x", "twitter"],
+      "aliases": [
+        "x",
+        "twitter"
+      ],
       "criticality": "medium",
       "recovery_complexity": "medium",
       "recommended_focus": "Hacked accounts, lost email or phone access, suspended/locked account distinction, and creator/business impact.",
       "official_links": [
         {
           "label": "X Hacked Account Help",
-          "url": "https://help.x.com/en/managing-your-account/hacked-x-account"
+          "url": "https://help.x.com/en/managing-your-account/hacked-x-account",
+          "review_status": "manual_review_required",
+          "review_note": "Automated checks may return 403 because of bot protection; manually verify in a browser."
         },
         {
           "label": "X Help Center",
-          "url": "https://help.x.com/"
+          "url": "https://help.x.com/",
+          "review_status": "manual_review_required",
+          "review_note": "Automated checks may return 403 because of bot protection; manually verify in a browser."
         }
-      ]
+      ],
+      "manual_review_required": true,
+      "manual_review_reason": "Automated link checks may return 403 because of X bot protection; verify these official URLs in a browser before relying on them.",
+      "last_manual_review_at": null
     },
     {
       "priority": 7,
       "service": "TikTok",
-      "aliases": ["tiktok"],
+      "aliases": [
+        "tiktok"
+      ],
       "criticality": "medium",
       "recovery_complexity": "medium",
       "recommended_focus": "Hacked accounts, phone/email login, creator accounts, and identity verification.",
@@ -129,7 +159,10 @@
     {
       "priority": 8,
       "service": "Yahoo Mail",
-      "aliases": ["yahoo", "yahoo mail"],
+      "aliases": [
+        "yahoo",
+        "yahoo mail"
+      ],
       "criticality": "medium",
       "recovery_complexity": "low-medium",
       "recommended_focus": "Old accounts, forgotten recovery details, inactive accounts, and sign-in helper flow.",
@@ -147,7 +180,9 @@
     {
       "priority": 9,
       "service": "LinkedIn",
-      "aliases": ["linkedin"],
+      "aliases": [
+        "linkedin"
+      ],
       "criticality": "medium",
       "recovery_complexity": "medium",
       "recommended_focus": "Professional identity, hacked accounts, identity verification, recruiter/business reputation risk.",
@@ -165,7 +200,9 @@
     {
       "priority": 10,
       "service": "Telegram",
-      "aliases": ["telegram"],
+      "aliases": [
+        "telegram"
+      ],
       "criticality": "medium",
       "recovery_complexity": "medium",
       "recommended_focus": "Phone-number login, active sessions, two-step verification password, recovery email, and SIM-swap risk.",

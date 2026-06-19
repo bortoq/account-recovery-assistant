@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from account_recovery_assistant.web import dispatch_request
 
@@ -99,3 +100,18 @@ def test_plan_endpoint_returns_json_400_for_missing_required_fields():
     assert response["status"] == 400
     assert payload["error"] == "Validation error"
     assert payload["field"] == "role"
+
+
+def test_static_app_exposes_markdown_export_and_local_feedback_controls():
+    app_js = Path("src/account_recovery_assistant/static/app.js").read_text(encoding="utf-8")
+
+    assert "Download Markdown" in app_js
+    assert "Copy Support Message" in app_js
+    assert "## Knowledge Freshness" in app_js
+    assert "## Common Mistakes To Avoid" in app_js
+    assert "## Source Notes" in app_js
+    assert "Decision path:" in app_js
+    assert "feedback-recovered" in app_js
+    assert "feedback-stuck" in app_js
+    assert "feedback-link-worked" in app_js
+    assert "feedback-link-failed" in app_js
