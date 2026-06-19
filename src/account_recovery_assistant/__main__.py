@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .planner import generate_recovery_plan
+from .report import render_markdown
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -13,12 +14,21 @@ def main(argv: list[str] | None = None) -> int:
         description="Generate a safe account recovery plan from a JSON situation file.",
     )
     parser.add_argument("situation", help="Path to a JSON file describing the recovery situation.")
+    parser.add_argument(
+        "--format",
+        choices=("json", "markdown"),
+        default="json",
+        help="Output format.",
+    )
     args = parser.parse_args(argv)
 
     situation = _read_json(Path(args.situation))
     plan = generate_recovery_plan(situation)
-    json.dump(plan, sys.stdout, indent=2)
-    sys.stdout.write("\n")
+    if args.format == "markdown":
+        sys.stdout.write(render_markdown(plan))
+    else:
+        json.dump(plan, sys.stdout, indent=2)
+        sys.stdout.write("\n")
     return 0
 
 

@@ -70,3 +70,32 @@ def test_unsafe_intent_returns_refusal_without_procedural_steps():
     assert "rightful owner" in plan["reason"].lower()
     assert plan["checklist"] == []
     assert plan["official_links"] == []
+
+
+def test_service_priority_aliases_supply_official_links_for_top_services():
+    situation = {
+        "service": "IG",
+        "lost_factor": "authenticator_app",
+        "role": "owner",
+    }
+
+    plan = generate_recovery_plan(situation)
+
+    assert plan["service"] == "IG"
+    assert any(link["label"] == "Instagram Hacked Account" for link in plan["official_links"])
+
+
+def test_bypass_and_phishing_intents_are_refused_even_when_role_claims_owner():
+    for intent in ["bypass MFA", "phish support agent", "hack my old account"]:
+        plan = generate_recovery_plan(
+            {
+                "service": "Google",
+                "lost_factor": "authenticator_app",
+                "role": "owner",
+                "intent": intent,
+            }
+        )
+
+        assert plan["allowed"] is False
+        assert plan["case_type"] == "unsafe_or_unauthorized"
+        assert plan["checklist"] == []

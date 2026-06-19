@@ -44,6 +44,12 @@ Run an example:
 PYTHONPATH=src python3 -m account_recovery_assistant examples/lost_mfa.json
 ```
 
+Print a readable Markdown report:
+
+```bash
+PYTHONPATH=src python3 -m account_recovery_assistant --format markdown examples/lost_mfa.json
+```
+
 Run tests:
 
 ```bash
@@ -55,6 +61,8 @@ Supported MVP scenarios:
 - lost MFA device;
 - changed phone number;
 - suspicious activity lock.
+
+The planner also uses `data/service_priorities.json` for aliases and official links for the first top-priority services, including Google/Gmail, Apple/iCloud, Facebook, Instagram, Microsoft/Outlook, X/Twitter, TikTok, Yahoo Mail, LinkedIn, and Telegram.
 
 ## Similar Projects And Difference
 

@@ -1,10 +1,18 @@
 from typing import Any
 
-from .playbooks import load_playbooks
+from .playbooks import load_playbooks, load_service_priorities
 
 
 UNAUTHORIZED_ROLES = {"not_authorized", "attacker", "unknown_third_party"}
-UNSAFE_INTENT_WORDS = ("someone else", "without permission", "bypass", "hack", "phish")
+UNSAFE_INTENT_WORDS = (
+    "someone else",
+    "without permission",
+    "bypass",
+    "hack",
+    "phish",
+    "phishing",
+    "social engineer",
+)
 
 
 def generate_recovery_plan(situation: dict[str, Any]) -> dict[str, Any]:
@@ -26,6 +34,7 @@ def generate_recovery_plan(situation: dict[str, Any]) -> dict[str, Any]:
 
     case_type = _classify_case(situation)
     playbooks = load_playbooks()
+    service_priorities = load_service_priorities()
     playbook = playbooks["playbooks"][case_type]
     service = str(situation.get("service", "the service"))
 
@@ -35,7 +44,7 @@ def generate_recovery_plan(situation: dict[str, Any]) -> dict[str, Any]:
         "service": service,
         "checklist": playbook["checklist"],
         "evidence": playbook["evidence"],
-        "official_links": _official_links_for(service, playbook),
+        "official_links": _official_links_for(service, playbook, service_priorities),
         "support_message": _support_message(service, playbook),
         "hardening_steps": playbooks["hardening_steps"],
         "safety_warnings": playbooks["safety_warnings"],
@@ -61,12 +70,29 @@ def _classify_case(situation: dict[str, Any]) -> str:
     return "lost_mfa_device"
 
 
-def _official_links_for(service: str, playbook: dict[str, Any]) -> list[dict[str, str]]:
+def _official_links_for(
+    service: str,
+    playbook: dict[str, Any],
+    service_priorities: dict[str, Any],
+) -> list[dict[str, str]]:
     service_key = service.strip().lower()
+    priority_links = _priority_links_for(service_key, service_priorities)
+    if priority_links:
+        return priority_links
+
     links_by_service = playbook.get("official_links_by_service", {})
     if service_key in links_by_service:
         return links_by_service[service_key]
     return playbook["default_official_links"]
+
+
+def _priority_links_for(service_key: str, service_priorities: dict[str, Any]) -> list[dict[str, str]]:
+    for service in service_priorities.get("top_services", []):
+        aliases = {str(alias).lower() for alias in service.get("aliases", [])}
+        names = {str(service.get("service", "")).lower(), *aliases}
+        if service_key in names:
+            return service.get("official_links", [])
+    return []
 
 
 def _support_message(service: str, playbook: dict[str, Any]) -> str:
