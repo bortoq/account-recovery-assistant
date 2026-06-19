@@ -6,9 +6,20 @@
 
 **Safe account recovery guidance through official channels — for rightful owners and authorized representatives.**
 
+Lost access to an important account? This local CLI/web wizard helps you choose the safest official recovery path, prepare ownership evidence, avoid common lockout mistakes, and generate a clear support message.
+
 > **⚠️ Controlled alpha.** This tool helps you navigate official recovery flows. It does **not** automate account recovery, guarantee success, or bypass security.
 >
-> See [DISCLAIMER.md](DISCLAIMER.md), [PRIVACY.md](PRIVACY.md), and [LICENSE](LICENSE).
+> See [DISCLAIMER.md](DISCLAIMER.md), [PRIVACY.md](PRIVACY.md), [FEEDBACK.md](FEEDBACK.md), and [LICENSE](LICENSE).
+
+**Try it in 60 seconds:**
+
+```bash
+python -m pip install .
+account-recovery-assistant examples/lost_mfa.json
+```
+
+**Looking for alpha feedback:** if you test a real or simulated recovery scenario, please share what was clear, confusing, missing, or stale. See [FEEDBACK.md](FEEDBACK.md).
 
 ---
 
@@ -140,6 +151,7 @@ Project structure:
 
 - [roadmap.md](roadmap.md) — full plan and status
 - [docs/current-usage.md](docs/current-usage.md) — detailed usage
+- [FEEDBACK.md](FEEDBACK.md) — how to share useful alpha feedback safely
 - [docs/demo-script.md](docs/demo-script.md) — short demo flow
 - [docs/interview-script.md](docs/interview-script.md) — user discovery and validation questions
 - [docs/landing-pages.md](docs/landing-pages.md) — landing-page validation drafts
@@ -152,6 +164,8 @@ Project structure:
 - [SECURITY.md](SECURITY.md) — vulnerability and safety reporting
 - [THREAT_MODEL.md](THREAT_MODEL.md) — abuse and privacy threat model
 - [PUBLIC_ALPHA_CHECKLIST.md](PUBLIC_ALPHA_CHECKLIST.md) — public alpha release gate
+- [PRE_PUBLICATION_CHECKLIST.md](PRE_PUBLICATION_CHECKLIST.md) — final checklist before posting publicly
+- [docs/alpha-tester-issue.md](docs/alpha-tester-issue.md) — pinned alpha tester issue draft
 - [CHANGELOG.md](CHANGELOG.md) — release history
 
 ---

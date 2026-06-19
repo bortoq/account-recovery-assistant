@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a technical bug without sharing sensitive account data.
+title: "Bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Do not include passwords, backup codes, SMS codes, authenticator codes, identity documents, payment data, or private account details.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where did it happen?
+      options:
+        - CLI
+        - Local web wizard
+        - Package install/build
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Safe reproduction steps
+      description: Use examples or placeholders only.
+      placeholder: "1. Run ...\n2. Open ...\n3. Click ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "0.1.0 / commit hash"
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed passwords, codes, identity documents, and private account data.
+          required: true

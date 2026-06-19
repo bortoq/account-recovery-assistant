@@ -1,0 +1,35 @@
+name: Outdated official link
+description: Report a stale, broken, redirected, or confusing official link.
+title: "Link: "
+labels: [knowledge-base, links]
+body:
+  - type: input
+    id: link
+    attributes:
+      label: Link that needs review
+      placeholder: "https://..."
+    validations:
+      required: true
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: What happened?
+      options:
+        - 404 or not found
+        - Redirected somewhere unexpected
+        - Requires manual/browser review
+        - Provider page changed
+        - Better official link exists
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Do not include account data.
+  - type: input
+    id: replacement
+    attributes:
+      label: Suggested official replacement link, if known
+      placeholder: "https://..."

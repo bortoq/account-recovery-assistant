@@ -1,0 +1,40 @@
+name: Safety concern
+description: Report unsafe guidance, bypass-like behavior, or privacy risk.
+title: "Safety: "
+labels: [safety]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include exploit details beyond what is needed to understand the safety issue. Do not include real credentials, recovery codes, identity documents, or private account data.
+  - type: dropdown
+    id: concern_type
+    attributes:
+      label: Concern type
+      options:
+        - Unauthorized access guidance
+        - MFA bypass-like guidance
+        - Phishing/social engineering risk
+        - Sensitive data collection risk
+        - Incorrect or unsafe official-link guidance
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What is unsafe?
+      placeholder: "Describe the issue safely and with placeholders."
+    validations:
+      required: true
+  - type: textarea
+    id: safer_behavior
+    attributes:
+      label: Safer expected behavior
+  - type: checkboxes
+    id: sensitive_data
+    attributes:
+      label: Sensitive data check
+      options:
+        - label: I did not include passwords, codes, identity documents, or private account data.
+          required: true

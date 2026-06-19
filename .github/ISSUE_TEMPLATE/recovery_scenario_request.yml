@@ -1,0 +1,52 @@
+name: Recovery scenario request
+description: Suggest a new safe, official-channel recovery scenario.
+title: "Scenario: "
+labels: [scenario]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest scenarios only for rightful owners or authorized representatives. Do not include real secrets or private account data.
+  - type: input
+    id: service
+    attributes:
+      label: Service or provider
+      placeholder: "e.g. Discord, GitHub, WhatsApp, PayPal"
+    validations:
+      required: true
+  - type: dropdown
+    id: incident
+    attributes:
+      label: Incident type
+      options:
+        - Lost MFA / authenticator
+        - Changed/lost phone number
+        - Recovery email unavailable
+        - Hacked/taken over account
+        - Suspicious activity lock
+        - Business/admin lockout
+        - Estate/family/authorized representative
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What makes this scenario confusing?
+      placeholder: "Describe the recovery problem using placeholders only."
+    validations:
+      required: true
+  - type: textarea
+    id: official_links
+    attributes:
+      label: Official provider links, if known
+      placeholder: "https://..."
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Boundary check
+      options:
+        - label: This request is for official-channel recovery by the rightful owner or an authorized representative.
+          required: true
+        - label: I did not include passwords, codes, IDs, or private account data.
+          required: true
