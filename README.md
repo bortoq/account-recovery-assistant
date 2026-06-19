@@ -7,6 +7,8 @@
 
 Account Recovery Assistant is a safe guide for people who lost access to an account, got stuck in multi-factor authentication, forgot recovery details, or need help using official recovery channels.
 
+![Account Recovery Assistant Demo](docs/assets/demo.gif)
+
 ## Simple Description
 
 This is an account recovery helper. It does not hack accounts or bypass security. It helps the rightful owner understand what happened, collect proof, choose the right official process, and avoid mistakes that make recovery harder.
