@@ -11,8 +11,6 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 RECOVERY_PATH = ROOT / "data" / "recovery_playbooks.json"
 PRIORITIES_PATH = ROOT / "data" / "service_priorities.json"
-PACKAGED_RECOVERY_PATH = ROOT / "src" / "account_recovery_assistant" / "data" / "recovery_playbooks.json"
-PACKAGED_PRIORITIES_PATH = ROOT / "src" / "account_recovery_assistant" / "data" / "service_priorities.json"
 QUESTIONNAIRE_PATH = ROOT / "src" / "account_recovery_assistant" / "questionnaire.py"
 
 
@@ -103,11 +101,6 @@ def main() -> int:
     errors: list[str] = []
     recovery = load_json(RECOVERY_PATH)
     priorities = load_json(PRIORITIES_PATH)
-    packaged_recovery = load_json(PACKAGED_RECOVERY_PATH)
-    packaged_priorities = load_json(PACKAGED_PRIORITIES_PATH)
-
-    require(recovery == packaged_recovery, "data/recovery_playbooks.json differs from packaged copy", errors)
-    require(priorities == packaged_priorities, "data/service_priorities.json differs from packaged copy", errors)
     validate_recovery_playbooks(recovery, errors)
     validate_service_priorities(priorities, errors)
     validate_questionnaire_alignment(recovery, errors)

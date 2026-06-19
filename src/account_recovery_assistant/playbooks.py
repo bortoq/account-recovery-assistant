@@ -4,12 +4,24 @@ from pathlib import Path
 from typing import Any
 
 
+def _data_path(name: str) -> Path:
+    packaged = files("account_recovery_assistant.data").joinpath(name)
+    if packaged.is_file():
+        return Path(str(packaged))
+
+    source_tree = Path(__file__).resolve().parents[2] / "data" / name
+    if source_tree.is_file():
+        return source_tree
+
+    return Path(str(packaged))
+
+
 def default_playbooks_path() -> Path:
-    return Path(str(files("account_recovery_assistant.data").joinpath("recovery_playbooks.json")))
+    return _data_path("recovery_playbooks.json")
 
 
 def default_service_priorities_path() -> Path:
-    return Path(str(files("account_recovery_assistant.data").joinpath("service_priorities.json")))
+    return _data_path("service_priorities.json")
 
 
 def load_playbooks(path: str | Path | None = None) -> dict[str, Any]:

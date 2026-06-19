@@ -109,7 +109,7 @@ PYTHONPATH=src python3 -m pytest -v
 # Build package
 python3 -m build --no-isolation
 
-# Sync packaged data from the top-level data source of truth
+# Verify data/ is the single source of truth before build
 python3 scripts/sync_packaged_data.py
 
 # Validate knowledge-base structure and packaged-data sync
@@ -129,7 +129,7 @@ Project structure:
 │   ├── web.py           # Local web wizard server
 │   ├── static/          # Frontend JS/CSS
 │   └── __main__.py      # CLI entry point
-├── data/                # Top-level playbook source of truth
+├── data/                # Playbook source of truth
 ├── examples/            # Sample situation JSON files
 └── tests/               # pytest suite
 ```
@@ -148,6 +148,7 @@ Project structure:
 - [docs/deployment.md](docs/deployment.md) — local container and hosted deployment skeleton
 - [docs/hosted-operations.md](docs/hosted-operations.md) — hosted privacy, logging, retention, and abuse controls
 - [SECURITY.md](SECURITY.md) — vulnerability and safety reporting
+- [THREAT_MODEL.md](THREAT_MODEL.md) — abuse and privacy threat model
 - [PUBLIC_ALPHA_CHECKLIST.md](PUBLIC_ALPHA_CHECKLIST.md) — public alpha release gate
 - [CHANGELOG.md](CHANGELOG.md) — release history
 

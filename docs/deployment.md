@@ -9,6 +9,8 @@ docker build -t account-recovery-assistant:alpha .
 docker run --rm -p 8000:8000 account-recovery-assistant:alpha
 ```
 
+The Docker image runs as a non-root `app` user.
+
 Open:
 
 ```text
@@ -23,9 +25,37 @@ curl http://127.0.0.1:8000/healthz
 
 ## Environment Variables
 
-- `ARA_RATE_LIMIT_MAX_REQUESTS` — max POST requests per window per client. Default: `120`.
-- `ARA_RATE_LIMIT_WINDOW_SECONDS` — rate-limit window. Default: `60`.
+- `ARA_RATE_LIMIT_MAX_REQUESTS` — app-level POST request limit per window per client. Default: `120`.
+- `ARA_RATE_LIMIT_WINDOW_SECONDS` — app-level rate-limit window. Default: `60`.
 - `ARA_ACCESS_LOG=1` — enable basic server access logs. Request bodies are never logged by application code.
+
+## Reverse Proxy Profile
+
+Use a reverse proxy for TLS, request size limits, and production-grade edge rate limiting. See:
+
+```text
+deploy/nginx.conf
+```
+
+The example config sets:
+
+- small request body limit;
+- edge rate limiting;
+- `/healthz` proxying;
+- no application request body logging.
+
+## Persisted-Free Feedback Policy
+
+The current app stores feedback in memory only and caps it with `FEEDBACK_MAX_EVENTS`. It is lost on restart and is intended only for local alpha validation.
+
+Before persisting feedback in a hosted deployment, implement:
+
+- explicit hosted privacy policy;
+- retention period;
+- deletion path;
+- storage encryption;
+- no free-text personal details;
+- monitoring that request bodies are not logged.
 
 ## Production Requirements Before Hosted Public MVP
 

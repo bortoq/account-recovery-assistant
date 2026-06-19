@@ -64,18 +64,14 @@ def test_package_installs_into_target_and_can_load_packaged_json_data():
     assert payload == {"allowed": True, "case_type": "lost_mfa_device"}
 
 
-def test_data_files_are_synced_between_top_level_and_packaged():
-    """Ensure data/ and src/.../data/ stay identical to prevent drift."""
+def test_data_files_have_single_source_of_truth():
+    """Ensure data/ is the only tracked JSON source; build_py packages it."""
     top_level = Path("data")
     packaged = Path("src/account_recovery_assistant/data")
 
     for name in ["recovery_playbooks.json", "service_priorities.json"]:
-        top = json.loads((top_level / name).read_text(encoding="utf-8"))
-        pkg = json.loads((packaged / name).read_text(encoding="utf-8"))
-        assert top == pkg, (
-            f"{name} differs between data/ and src/account_recovery_assistant/data/. "
-            f"Run: cp data/{name} src/account_recovery_assistant/data/{name}"
-        )
+        assert (top_level / name).exists()
+        assert not (packaged / name).exists(), f"Do not track duplicate packaged data file: {name}"
 
 
 def test_installed_console_script_runs_real_example():
@@ -111,3 +107,22 @@ def test_installed_console_script_runs_real_example():
     plan = json.loads(result.stdout)
     assert plan["allowed"] is True
     assert plan["incident_id"] == "gmail_mfa_loss"
+
+
+def test_deployment_skeleton_uses_non_root_docker_and_reverse_proxy_docs():
+    dockerfile = Path("Dockerfile").read_text(encoding="utf-8")
+    deployment_doc = Path("docs/deployment.md").read_text(encoding="utf-8")
+    nginx_conf = Path("deploy/nginx.conf").read_text(encoding="utf-8")
+
+    assert "USER app" in dockerfile
+    assert "HEALTHCHECK" in dockerfile
+    assert "deploy/nginx.conf" in deployment_doc
+    assert "limit_req_zone" in nginx_conf
+    assert "client_max_body_size" in nginx_conf
+
+
+def test_release_candidate_document_exists():
+    rc = Path("docs/release-candidate-v0.1.0-rc.1.md")
+
+    assert rc.exists()
+    assert "v0.1.0-rc.1" in rc.read_text(encoding="utf-8")

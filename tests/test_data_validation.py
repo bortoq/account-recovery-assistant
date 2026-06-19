@@ -19,7 +19,7 @@ def test_schema_files_exist_for_knowledge_base_contracts():
     assert Path("schemas/service_priorities.schema.json").exists()
 
 
-def test_sync_packaged_data_script_runs_and_preserves_validation():
+def test_sync_packaged_data_script_confirms_single_source_of_truth():
     result = subprocess.run(
         [sys.executable, "scripts/sync_packaged_data.py"],
         check=True,
@@ -27,4 +27,11 @@ def test_sync_packaged_data_script_runs_and_preserves_validation():
         text=True,
     )
 
-    assert "Synced data/recovery_playbooks.json" in result.stdout
+    assert "Data source of truth is data/." in result.stdout
+
+
+def test_packaged_json_files_are_not_tracked_in_source_tree():
+    packaged = Path("src/account_recovery_assistant/data")
+
+    assert not (packaged / "recovery_playbooks.json").exists()
+    assert not (packaged / "service_priorities.json").exists()

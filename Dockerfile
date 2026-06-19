@@ -11,7 +11,12 @@ COPY . /app
 RUN python -m pip install --no-cache-dir --upgrade pip && \
     python scripts/sync_packaged_data.py && \
     python scripts/validate_data.py && \
-    python -m pip install --no-cache-dir .
+    python -m pip install --no-cache-dir . && \
+    addgroup --system app && \
+    adduser --system --ingroup app --home /app app && \
+    chown -R app:app /app
+
+USER app
 
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
