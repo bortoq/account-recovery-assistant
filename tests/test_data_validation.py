@@ -19,9 +19,9 @@ def test_schema_files_exist_for_knowledge_base_contracts():
     assert Path("schemas/service_priorities.schema.json").exists()
 
 
-def test_sync_packaged_data_script_confirms_single_source_of_truth():
+def test_check_data_source_script_confirms_single_source_of_truth():
     result = subprocess.run(
-        [sys.executable, "scripts/sync_packaged_data.py"],
+        [sys.executable, "scripts/check_data_source.py"],
         check=True,
         capture_output=True,
         text=True,

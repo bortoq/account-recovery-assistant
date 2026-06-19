@@ -77,13 +77,20 @@
       "official_links": [
         {
           "label": "Instagram Hacked Account",
-          "url": "https://www.instagram.com/hacked/"
+          "url": "https://www.instagram.com/hacked/",
+          "review_status": "manual_review_required",
+          "review_note": "Automated checks may return 429 because of provider bot protection; manually verify in a browser."
         },
         {
           "label": "Instagram Help Center",
-          "url": "https://help.instagram.com/"
+          "url": "https://help.instagram.com/",
+          "review_status": "manual_review_required",
+          "review_note": "Automated checks may return 429 because of provider bot protection; manually verify in a browser."
         }
-      ]
+      ],
+      "manual_review_required": true,
+      "manual_review_reason": "Automated link checks may return 429 for Instagram because of provider bot protection; verify official URLs in a browser before relying on them.",
+      "last_manual_review_at": null
     },
     {
       "priority": 5,

@@ -15,7 +15,7 @@ Current status: **controlled local alpha MVP**.
 
 ## Known Limitations
 
-- X/Twitter links require manual browser review because automated checks return bot-protection 403 responses.
+- Instagram and X/Twitter links require manual browser review because automated checks return bot-protection 403/429 responses.
 - Hosted deployment controls are a skeleton, not production enforcement.
 - Outcome and willingness-to-pay data are not validated yet.
 - Browser E2E is currently lightweight/optional, not a full cross-browser matrix.
@@ -25,8 +25,8 @@ Current status: **controlled local alpha MVP**.
 Before announcing widely:
 
 1. Run `PUBLIC_ALPHA_CHECKLIST.md`.
-2. Run `python3 scripts/sync_packaged_data.py`.
+2. Run `python3 scripts/check_data_source.py`.
 3. Run `python3 scripts/validate_data.py`.
 4. Run `python3 scripts/check_links.py`.
 5. Build and test the wheel from a clean checkout.
-6. Manually review X/Twitter links or keep them explicitly marked as manual review.
+6. Manually review Instagram and X/Twitter links or keep them explicitly marked as manual review.

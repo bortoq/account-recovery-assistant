@@ -126,3 +126,18 @@ def test_release_candidate_document_exists():
 
     assert rc.exists()
     assert "v0.1.0-rc.1" in rc.read_text(encoding="utf-8")
+
+
+def test_production_deployment_docs_include_monitoring_privacy_and_compose():
+    assert Path("deploy/docker-compose.yml").exists()
+    assert Path("docs/monitoring.md").exists()
+    assert Path("docs/production-privacy-template.md").exists()
+
+    compose = Path("deploy/docker-compose.yml").read_text(encoding="utf-8")
+    monitoring = Path("docs/monitoring.md").read_text(encoding="utf-8")
+    privacy = Path("docs/production-privacy-template.md").read_text(encoding="utf-8")
+
+    assert "read_only: true" in compose
+    assert "no-new-privileges" in compose
+    assert "/healthz" in monitoring
+    assert "Request bodies" in privacy

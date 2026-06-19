@@ -110,7 +110,7 @@ PYTHONPATH=src python3 -m pytest -v
 python3 -m build --no-isolation
 
 # Verify data/ is the single source of truth before build
-python3 scripts/sync_packaged_data.py
+python3 scripts/check_data_source.py
 
 # Validate knowledge-base structure and packaged-data sync
 python3 scripts/validate_data.py
@@ -123,7 +123,7 @@ Project structure:
 
 ```
 ├── src/account_recovery_assistant/
-│   ├── data/            # Packaged playbooks (also mirrored in data/)
+│   ├── data/            # Package data namespace; JSON copied during build
 │   ├── planner.py       # Core recovery plan engine
 │   ├── validation.py    # Input validation (role, required fields, types)
 │   ├── web.py           # Local web wizard server
@@ -146,6 +146,8 @@ Project structure:
 - [docs/releasing.md](docs/releasing.md) — build & publish guide
 - [docs/public-alpha-status.md](docs/public-alpha-status.md) — current public alpha readiness status
 - [docs/deployment.md](docs/deployment.md) — local container and hosted deployment skeleton
+- [docs/monitoring.md](docs/monitoring.md) — hosted monitoring skeleton
+- [docs/production-privacy-template.md](docs/production-privacy-template.md) — hosted privacy template
 - [docs/hosted-operations.md](docs/hosted-operations.md) — hosted privacy, logging, retention, and abuse controls
 - [SECURITY.md](SECURITY.md) — vulnerability and safety reporting
 - [THREAT_MODEL.md](THREAT_MODEL.md) — abuse and privacy threat model

@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY . /app
 RUN python -m pip install --no-cache-dir --upgrade pip && \
-    python scripts/sync_packaged_data.py && \
+    python scripts/check_data_source.py && \
     python scripts/validate_data.py && \
     python -m pip install --no-cache-dir . && \
     addgroup --system app && \

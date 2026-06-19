@@ -29,6 +29,16 @@ curl http://127.0.0.1:8000/healthz
 - `ARA_RATE_LIMIT_WINDOW_SECONDS` — app-level rate-limit window. Default: `60`.
 - `ARA_ACCESS_LOG=1` — enable basic server access logs. Request bodies are never logged by application code.
 
+## Compose Profile
+
+A local hardened container profile is available at:
+
+```text
+deploy/docker-compose.yml
+```
+
+It enables read-only filesystem mode, `no-new-privileges`, a health check, and rate-limit environment variables.
+
 ## Reverse Proxy Profile
 
 Use a reverse proxy for TLS, request size limits, and production-grade edge rate limiting. See:
@@ -56,6 +66,13 @@ Before persisting feedback in a hosted deployment, implement:
 - storage encryption;
 - no free-text personal details;
 - monitoring that request bodies are not logged.
+
+## Monitoring And Privacy Templates
+
+See also:
+
+- [monitoring.md](monitoring.md)
+- [production-privacy-template.md](production-privacy-template.md)
 
 ## Production Requirements Before Hosted Public MVP
 

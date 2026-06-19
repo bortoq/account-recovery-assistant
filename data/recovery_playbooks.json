@@ -325,7 +325,9 @@
         },
         {
           "label": "Instagram Hacked Account",
-          "url": "https://help.instagram.com/368191326593075"
+          "url": "https://help.instagram.com/368191326593075",
+          "review_status": "manual_review_required",
+          "review_note": "Automated checks may return 429 because of provider bot protection; manually verify in a browser."
         }
       ],
       "source_notes": [

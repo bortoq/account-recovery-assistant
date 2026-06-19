@@ -20,8 +20,8 @@ jobs:
         run: python -m pip install --upgrade pip build pytest setuptools
       - name: Run tests
         run: PYTHONPATH=src python -m pytest -v
-      - name: Sync packaged data
-        run: python scripts/sync_packaged_data.py
+      - name: Check data source
+        run: python scripts/check_data_source.py
       - name: Validate data
         run: python scripts/validate_data.py
       - name: Install Playwright browsers
@@ -32,6 +32,15 @@ jobs:
         run: PYTHONPATH=src python -m pytest tests/test_browser_smoke.py -q
       - name: Build Docker image
         run: docker build -t account-recovery-assistant:ci .
+      - name: Docker health smoke test
+        run: |
+          docker run --rm -d --name ara-ci -p 8000:8000 account-recovery-assistant:ci
+          for i in {1..20}; do
+            python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2).read()" && break
+            sleep 1
+          done
+          docker logs ara-ci
+          docker stop ara-ci
       - name: Build package
         run: python -m build --no-isolation
       - name: Wheel smoke test
