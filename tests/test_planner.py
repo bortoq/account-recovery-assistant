@@ -1,4 +1,4 @@
-from account_recovery_assistant import generate_recovery_plan
+from account_recovery_assistant import generate_recovery_plan, get_incident_questionnaire, list_supported_incidents
 
 
 def test_lost_mfa_device_plan_uses_official_recovery_and_backup_codes():
@@ -99,3 +99,43 @@ def test_bypass_and_phishing_intents_are_refused_even_when_role_claims_owner():
         assert plan["allowed"] is False
         assert plan["case_type"] == "unsafe_or_unauthorized"
         assert plan["checklist"] == []
+
+
+def test_supported_incidents_include_high_value_web_wizard_cases():
+    incidents = list_supported_incidents()
+
+    assert [incident["id"] for incident in incidents] == [
+        "gmail_mfa_loss",
+        "apple_trusted_device_loss",
+        "meta_account_hacked",
+        "microsoft_admin_lockout",
+    ]
+    assert incidents[0]["service"] == "Google / Gmail"
+    assert incidents[-1]["service"] == "Microsoft"
+
+
+def test_gmail_mfa_questionnaire_starts_with_clear_entry_questions():
+    questions = get_incident_questionnaire("gmail_mfa_loss")
+
+    assert questions[0]["id"] == "role"
+    assert questions[1]["id"] == "still_knows_password"
+    assert any(question["id"] == "has_backup_codes" for question in questions)
+    assert any(question["id"] == "has_recovery_email" for question in questions)
+    assert all("prompt" in question for question in questions)
+
+
+def test_meta_hacked_questionnaire_asks_about_account_control_and_identity():
+    questions = get_incident_questionnaire("meta_account_hacked")
+
+    assert any(question["id"] == "still_controls_email" for question in questions)
+    assert any(question["id"] == "still_controls_phone" for question in questions)
+    assert any(question["id"] == "has_photo_id" for question in questions)
+
+
+def test_unknown_incident_questionnaire_returns_key_error():
+    try:
+        get_incident_questionnaire("unknown_incident")
+    except KeyError as exc:
+        assert "unknown_incident" in str(exc)
+    else:
+        raise AssertionError("Expected KeyError for unknown incident")
