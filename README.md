@@ -9,6 +9,8 @@ Account Recovery Assistant is a safe guide for people who lost access to an acco
 
 ![Account Recovery Assistant Demo](docs/assets/demo.gif)
 
+This should be treated as a controlled alpha MVP: it helps users navigate official recovery flows, but it does not automate account recovery and does not guarantee success.
+
 ## Simple Description
 
 This is an account recovery helper. It does not hack accounts or bypass security. It helps the rightful owner understand what happened, collect proof, choose the right official process, and avoid mistakes that make recovery harder.
@@ -22,6 +24,8 @@ Official recovery flows are often confusing. Users do not know what information 
 ## Safety Principle
 
 The product must only help the rightful owner or an authorized representative. It must not provide instructions for bypassing MFA, phishing, social engineering, password cracking, device hacking, or session theft. All guidance must use official service procedures.
+
+See [DISCLAIMER.md](DISCLAIMER.md), [PRIVACY.md](PRIVACY.md), and [LICENSE](LICENSE) for the current legal, privacy, and usage boundary.
 
 ## Main Use Cases
 
@@ -68,7 +72,7 @@ PYTHONPATH=src python3 -m pytest -v
 Build a package locally:
 
 ```bash
-python3 -m build
+python3 -m build --no-isolation
 ```
 
 Start the local web wizard:
@@ -85,9 +89,10 @@ PYTHONPATH=src python3 -m account_recovery_assistant.web
 
 Supported MVP scenarios:
 
-- lost MFA device;
-- changed phone number;
-- suspicious activity lock.
+- Gmail MFA loss;
+- Apple trusted-device or trusted-phone loss;
+- Meta account hacked;
+- Microsoft admin or workspace lockout.
 
 Example inputs included in the repository:
 
@@ -107,6 +112,8 @@ The project now also exposes a normalized incident questionnaire layer for the f
 
 Each of those first incidents now uses a shared questionnaire contract with stable `id`, `field`, `answer_type`, and `required` keys so the same flow can drive the CLI today and a future web wizard later.
 
+Installed package builds now include the recovery playbooks and service priority JSON files inside the package itself, so the CLI and library work after `pip install` instead of only from the source tree.
+
 The recovery knowledge base now carries incident-specific metadata for those first web-wizard cases: ownership evidence, common mistakes to avoid, source notes, verification date, review due date, review cadence, confidence level, and explicit review status.
 
 The Phase 2 and Phase 3 foundation is now product-oriented rather than purely exploratory:
@@ -120,6 +127,7 @@ Phase 4 is now started as a local web product surface:
 - a mobile-friendly incident picker;
 - a browser questionnaire flow for the first four canonical incidents;
 - a plan screen that surfaces checklist, evidence, official links, support message, hardening steps, and knowledge freshness warnings.
+- graceful JSON error responses and frontend error states for invalid input and unknown incidents.
 
 The current MVP now also produces first-approximation recovery guidance instead of only generic checklists:
 

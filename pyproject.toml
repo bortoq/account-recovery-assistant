@@ -33,7 +33,7 @@ account-recovery-assistant = "account_recovery_assistant.__main__:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-account_recovery_assistant = ["static/*.css", "static/*.js"]
+account_recovery_assistant = ["static/*.css", "static/*.js", "data/*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

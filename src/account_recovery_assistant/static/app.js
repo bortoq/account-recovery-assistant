@@ -3,10 +3,14 @@ const wizardNode = document.querySelector("#wizard");
 
 async function fetchJson(path, options = {}) {
   const response = await fetch(path, options);
+  const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`);
+    const detail = payload.detail || payload.error || `Request failed: ${response.status}`;
+    const error = new Error(detail);
+    error.field = payload.field;
+    throw error;
   }
-  return response.json();
+  return payload;
 }
 
 function escapeHtml(value) {
@@ -22,6 +26,7 @@ function renderIncidentPicker(incidents) {
     <section class="stack">
       <section>
         <h2>Pick Your Incident</h2>
+        <p class="warning">Do not enter passwords, backup codes, SMS codes, or authenticator codes into this wizard.</p>
         <div class="incident-grid">
           ${incidents
             .map(
@@ -69,38 +74,43 @@ function renderQuestion(question) {
 }
 
 async function loadQuestionnaire(incidentId) {
-  statusNode.textContent = "Loading questionnaire...";
-  const payload = await fetchJson(`/api/incidents/${incidentId}/questionnaire`);
-  statusNode.textContent = `Answer the questions for ${payload.title}.`;
-  wizardNode.innerHTML = `
-    <section class="stack">
-      <section>
-        <h2>${escapeHtml(payload.title)}</h2>
-        <p class="muted">${escapeHtml(payload.service)}</p>
-        <form id="questionnaire-form">
-          ${payload.questions.map(renderQuestion).join("")}
-          <div class="actions">
-            <button type="submit">Generate Recovery Plan</button>
-            <button type="button" class="secondary" id="back-button">Back</button>
-          </div>
-        </form>
+  try {
+    statusNode.textContent = "Loading questionnaire...";
+    const payload = await fetchJson(`/api/incidents/${incidentId}/questionnaire`);
+    statusNode.textContent = `Answer the questions for ${payload.title}.`;
+    wizardNode.innerHTML = `
+      <section class="stack">
+        <section>
+          <h2>${escapeHtml(payload.title)}</h2>
+          <p class="muted">${escapeHtml(payload.service)}</p>
+          <p class="warning">Use this wizard for guidance only. Do not paste passwords, backup codes, or identity document numbers here.</p>
+          <form id="questionnaire-form">
+            ${payload.questions.map(renderQuestion).join("")}
+            <div class="actions">
+              <button type="submit">Generate Recovery Plan</button>
+              <button type="button" class="secondary" id="back-button">Back</button>
+            </div>
+          </form>
+        </section>
       </section>
-    </section>
-  `;
+    `;
 
-  wizardNode.querySelector("#back-button").addEventListener("click", init);
-  wizardNode.querySelector("#questionnaire-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const answers = Object.fromEntries(formData.entries());
-    const payloadBody = { incident_id: incidentId, service: payload.service };
+    wizardNode.querySelector("#back-button").addEventListener("click", init);
+    wizardNode.querySelector("#questionnaire-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const answers = Object.fromEntries(formData.entries());
+      const payloadBody = { incident_id: incidentId, service: payload.service };
 
-    for (const [key, value] of Object.entries(answers)) {
-      payloadBody[key] = value === "true" ? true : value === "false" ? false : value;
-    }
+      for (const [key, value] of Object.entries(answers)) {
+        payloadBody[key] = value === "true" ? true : value === "false" ? false : value;
+      }
 
-    await submitPlan(payloadBody);
-  });
+      await submitPlan(payloadBody);
+    });
+  } catch (error) {
+    renderError("Questionnaire unavailable", error.message);
+  }
 }
 
 function listHtml(items, render = (item) => escapeHtml(item)) {
@@ -197,19 +207,43 @@ function renderPlan(plan) {
 }
 
 async function submitPlan(payload) {
-  statusNode.textContent = "Generating plan...";
-  const plan = await fetchJson("/api/plan", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  renderPlan(plan);
+  try {
+    statusNode.textContent = "Generating plan...";
+    const plan = await fetchJson("/api/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    renderPlan(plan);
+  } catch (error) {
+    renderError("Could not generate a plan", error.message);
+  }
 }
 
 async function init() {
-  statusNode.textContent = "Loading incidents...";
-  const payload = await fetchJson("/api/incidents");
-  renderIncidentPicker(payload.incidents);
+  try {
+    statusNode.textContent = "Loading incidents...";
+    const payload = await fetchJson("/api/incidents");
+    renderIncidentPicker(payload.incidents);
+  } catch (error) {
+    renderError("Could not load incidents", error.message);
+  }
+}
+
+function renderError(title, detail) {
+  statusNode.textContent = "Error";
+  wizardNode.innerHTML = `
+    <section class="stack">
+      <section class="warning">
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(detail)}</p>
+      </section>
+      <div class="actions">
+        <button type="button" id="retry-button">Try Again</button>
+      </div>
+    </section>
+  `;
+  wizardNode.querySelector("#retry-button").addEventListener("click", init);
 }
 
 void init();

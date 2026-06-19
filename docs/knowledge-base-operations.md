@@ -83,4 +83,6 @@ The current CLI does not silently trust all incident records equally.
 - `needs_review` records stay usable, but the generated plan adds an explicit warning.
 - `unverified` records fall back to generic playbook behavior.
 
+The planner now also treats a past `review_due_at` date as authoritative evidence that the record needs review, even if the JSON file still says `verified`.
+
 This is the minimum contract required before building a web wizard on top of the engine.

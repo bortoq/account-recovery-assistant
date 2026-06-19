@@ -8,11 +8,14 @@ The current implementation is a Python CLI tool plus a small core library.
 
 It does not recover accounts automatically. It does not bypass security. It turns a confusing recovery situation into a structured recovery plan that uses official channels only.
 
+The package now also ships its recovery playbooks inside the installable distribution, so the CLI and library work after installation instead of only from the source tree.
+
 It now also exposes the minimum product contract needed before a web wizard:
 
 - a canonical first incident set;
 - a normalized questionnaire schema for those incidents;
 - explicit knowledge-base review status and review cadence metadata.
+- validation and error responses for malformed web requests or missing questionnaire fields.
 
 ## How To Use It
 

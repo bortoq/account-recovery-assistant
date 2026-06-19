@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade packaging tools
+        run: python -m pip install --upgrade pip build pytest
+      - name: Run tests
+        run: PYTHONPATH=src python -m pytest -v
+      - name: Build package
+        run: python -m build --no-isolation
+      - name: Wheel smoke test
+        run: |
+          python -m pip install --no-deps --force-reinstall dist/*.whl --target /tmp/ara-wheel
+          PYTHONPATH=/tmp/ara-wheel python -c "from account_recovery_assistant import generate_recovery_plan; plan = generate_recovery_plan({'service': 'Google', 'lost_factor': 'authenticator_app', 'role': 'owner'}); assert plan['allowed'] is True"

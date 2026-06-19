@@ -1,8 +1,14 @@
+import json
+from pathlib import Path
+
+import pytest
+
 from account_recovery_assistant import (
     generate_recovery_plan,
     get_incident_questionnaire,
     list_supported_incidents,
 )
+from account_recovery_assistant import planner as planner_module
 
 
 def test_lost_mfa_device_plan_uses_official_recovery_and_backup_codes():
@@ -202,6 +208,22 @@ def test_incident_specific_plan_exposes_questionnaire_contract():
     assert plan["questionnaire"]["questions"][0]["id"] == "role"
 
 
+def test_explicit_incident_id_controls_case_type_even_without_classifier_fields():
+    plan = generate_recovery_plan(
+        {
+            "service": "Meta",
+            "incident_id": "meta_account_hacked",
+            "role": "owner",
+            "still_controls_email": False,
+            "still_controls_phone": True,
+            "has_photo_id": True,
+            "business_account": False,
+        }
+    )
+
+    assert plan["case_type"] == "suspicious_activity_lock"
+
+
 def test_verified_incident_reports_review_due_date_and_status():
     plan = generate_recovery_plan(
         {
@@ -231,6 +253,30 @@ def test_stale_incident_sets_review_status_and_warning():
     assert plan["knowledge_base"]["review_due_at"] == "2026-06-14"
     assert plan["knowledge_base"]["stale"] is True
     assert any("needs review" in warning.lower() for warning in plan["safety_warnings"])
+
+
+def test_review_due_date_in_the_past_forces_needs_review_status(monkeypatch, tmp_path):
+    data = json.loads(Path("data/recovery_playbooks.json").read_text(encoding="utf-8"))
+    data["incident_records"]["gmail_mfa_loss"]["review_due_at"] = "2020-01-01"
+    data["incident_records"]["gmail_mfa_loss"]["status"] = "verified"
+    data["incident_records"]["gmail_mfa_loss"]["stale"] = False
+    custom_path = tmp_path / "recovery_playbooks.json"
+    custom_path.write_text(json.dumps(data), encoding="utf-8")
+
+    original_load_playbooks = planner_module.load_playbooks
+    monkeypatch.setattr(planner_module, "load_playbooks", lambda: original_load_playbooks(custom_path))
+
+    plan = generate_recovery_plan(
+        {
+            "service": "Google",
+            "incident_id": "gmail_mfa_loss",
+            "role": "owner",
+            "lost_factor": "authenticator_app",
+        }
+    )
+
+    assert plan["knowledge_base"]["status"] == "needs_review"
+    assert plan["knowledge_base"]["stale"] is True
 
 
 def test_gmail_without_backup_codes_steers_user_to_consistent_recovery_context():

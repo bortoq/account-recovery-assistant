@@ -24,6 +24,14 @@ def test_questionnaire_endpoint_returns_normalized_questions():
     assert payload["questions"][0]["answer_type"] == "single_choice"
 
 
+def test_unknown_questionnaire_returns_json_404():
+    response = dispatch_request("GET", "/api/incidents/nope/questionnaire")
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 404
+    assert payload["error"] == "Unknown incident"
+
+
 def test_root_page_serves_wizard_shell():
     response = dispatch_request("GET", "/")
     html = response["body"].decode("utf-8")
@@ -39,6 +47,10 @@ def test_plan_endpoint_returns_incident_plan_and_review_status():
         "service": "Instagram",
         "account_state": "locked_suspicious_activity",
         "role": "owner",
+        "still_controls_email": False,
+        "still_controls_phone": True,
+        "has_photo_id": True,
+        "business_account": False,
     }
 
     response = dispatch_request("POST", "/api/plan", body=json.dumps(payload).encode("utf-8"))
@@ -49,3 +61,41 @@ def test_plan_endpoint_returns_incident_plan_and_review_status():
     assert "hacked-account flow" in plan["next_best_action"].lower()
     assert "expected_timeline" in plan
     assert any("needs review" in warning.lower() for warning in plan["safety_warnings"])
+
+
+def test_plan_endpoint_uses_incident_case_type_when_incident_id_is_explicit():
+    payload = {
+        "incident_id": "microsoft_admin_lockout",
+        "service": "Microsoft",
+        "role": "owner",
+        "has_backup_admin": False,
+        "has_billing_access": False,
+        "domain_control": True,
+        "still_knows_password": False,
+    }
+
+    response = dispatch_request("POST", "/api/plan", body=json.dumps(payload).encode("utf-8"))
+    plan = json.loads(response["body"].decode("utf-8"))
+
+    assert plan["case_type"] == "suspicious_activity_lock"
+
+
+def test_plan_endpoint_returns_json_400_for_invalid_json():
+    response = dispatch_request("POST", "/api/plan", body=b"{not json")
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 400
+    assert payload["error"] == "Invalid JSON"
+
+
+def test_plan_endpoint_returns_json_400_for_missing_required_fields():
+    response = dispatch_request(
+        "POST",
+        "/api/plan",
+        body=json.dumps({"incident_id": "gmail_mfa_loss", "service": "Google"}).encode("utf-8"),
+    )
+    payload = json.loads(response["body"].decode("utf-8"))
+
+    assert response["status"] == 400
+    assert payload["error"] == "Validation error"
+    assert payload["field"] == "role"

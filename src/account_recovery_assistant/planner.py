@@ -3,9 +3,9 @@ from typing import Any
 
 from .playbooks import load_playbooks, load_service_priorities
 from .questionnaire import get_incident_definition
+from .validation import UNAUTHORIZED_ROLES
 
 
-UNAUTHORIZED_ROLES = {"not_authorized", "attacker", "unknown_third_party"}
 UNSAFE_INTENT_WORDS = (
     "someone else",
     "without permission",
@@ -14,6 +14,14 @@ UNSAFE_INTENT_WORDS = (
     "phish",
     "phishing",
     "social engineer",
+    "steal",
+    "ex girlfriend",
+    "ex-boyfriend",
+    "employee account",
+    "get into",
+    "взлом",
+    "фишинг",
+    "без разрешения",
 )
 
 
@@ -40,11 +48,12 @@ def generate_recovery_plan(situation: dict[str, Any]) -> dict[str, Any]:
             "questionnaire": None,
         }
 
-    case_type = _classify_case(situation)
     playbooks = load_playbooks()
     service_priorities = load_service_priorities()
+    provisional_case_type = _classify_case(situation)
+    incident_record = _incident_record_for(situation, provisional_case_type, playbooks, service_priorities)
+    case_type = str(incident_record["case_type"]) if incident_record else provisional_case_type
     playbook = playbooks["playbooks"][case_type]
-    incident_record = _incident_record_for(situation, case_type, playbooks, service_priorities)
     service = str(situation.get("service", "the service"))
     official_links = _official_links_for(service, playbook, service_priorities, incident_record)
     evidence = incident_record.get("ownership_evidence", playbook["evidence"]) if incident_record else playbook["evidence"]
@@ -178,8 +187,10 @@ def _knowledge_base_status(incident_record: dict[str, Any] | None) -> dict[str, 
         incident_record.get("last_verified_at"),
         review_cadence_days,
     )
-    stale = bool(incident_record.get("stale", False))
+    stale = bool(incident_record.get("stale", False)) or _is_past_due(review_due_at)
     status = str(incident_record.get("status") or ("needs_review" if stale else "verified"))
+    if stale:
+        status = "needs_review"
     return {
         "last_verified_at": incident_record.get("last_verified_at"),
         "review_due_at": review_due_at,
@@ -203,6 +214,12 @@ def _review_due_at(last_verified_at: Any, review_cadence_days: int) -> str | Non
         return None
     verified_date = date.fromisoformat(str(last_verified_at))
     return (verified_date + timedelta(days=review_cadence_days)).isoformat()
+
+
+def _is_past_due(review_due_at: Any) -> bool:
+    if not review_due_at:
+        return False
+    return date.fromisoformat(str(review_due_at)) < date.today()
 
 
 def _questionnaire_for(incident_record: dict[str, Any] | None) -> dict[str, Any] | None:

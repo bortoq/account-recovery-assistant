@@ -6,10 +6,12 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
 from io import BytesIO
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Any
 
 from . import generate_recovery_plan, get_incident_definition, get_incident_questionnaire, list_supported_incidents
+from .validation import ValidationError, validate_situation
 
 
 def _static_dir() -> Path:
@@ -73,41 +75,52 @@ def _asset_response(handler: BaseHTTPRequestHandler, name: str, content_type: st
 
 class _WizardHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
-        if self.path == "/":
-            _text_response(self, _html_shell())
-            return
-        if self.path == "/static/app.css":
-            _asset_response(self, "app.css", "text/css; charset=utf-8")
-            return
-        if self.path == "/static/app.js":
-            _asset_response(self, "app.js", "application/javascript; charset=utf-8")
-            return
-        if self.path == "/api/incidents":
-            _json_response(self, {"incidents": list_supported_incidents()})
-            return
-        if self.path.startswith("/api/incidents/") and self.path.endswith("/questionnaire"):
-            incident_id = self.path[len("/api/incidents/") : -len("/questionnaire")].strip("/")
-            incident = get_incident_definition(incident_id)
-            _json_response(
-                self,
-                {
-                    "incident_id": incident["id"],
-                    "service": incident["service"],
-                    "title": incident["title"],
-                    "questions": get_incident_questionnaire(incident_id),
-                },
-            )
-            return
-        _json_response(self, {"error": "Not found"}, status=404)
+        try:
+            if self.path == "/":
+                _text_response(self, _html_shell())
+                return
+            if self.path == "/static/app.css":
+                _asset_response(self, "app.css", "text/css; charset=utf-8")
+                return
+            if self.path == "/static/app.js":
+                _asset_response(self, "app.js", "application/javascript; charset=utf-8")
+                return
+            if self.path == "/api/incidents":
+                _json_response(self, {"incidents": list_supported_incidents()})
+                return
+            if self.path.startswith("/api/incidents/") and self.path.endswith("/questionnaire"):
+                incident_id = self.path[len("/api/incidents/") : -len("/questionnaire")].strip("/")
+                incident = get_incident_definition(incident_id)
+                _json_response(
+                    self,
+                    {
+                        "incident_id": incident["id"],
+                        "service": incident["service"],
+                        "title": incident["title"],
+                        "questions": get_incident_questionnaire(incident_id),
+                    },
+                )
+                return
+            _json_response(self, {"error": "Not found"}, status=404)
+        except KeyError as exc:
+            _json_response(self, {"error": "Unknown incident", "detail": str(exc)}, status=404)
 
     def do_POST(self) -> None:
-        if self.path != "/api/plan":
-            _json_response(self, {"error": "Not found"}, status=404)
-            return
-        content_length = int(self.headers.get("Content-Length", "0"))
-        payload = json.loads(self.rfile.read(content_length).decode("utf-8"))
-        plan = generate_recovery_plan(payload)
-        _json_response(self, plan)
+        try:
+            if self.path != "/api/plan":
+                _json_response(self, {"error": "Not found"}, status=404)
+                return
+            content_length = int(self.headers.get("Content-Length", "0"))
+            payload = json.loads(self.rfile.read(content_length).decode("utf-8"))
+            validate_situation(payload)
+            plan = generate_recovery_plan(payload)
+            _json_response(self, plan)
+        except JSONDecodeError:
+            _json_response(self, {"error": "Invalid JSON", "detail": "Request body must be valid JSON."}, status=400)
+        except ValidationError as exc:
+            _json_response(self, {"error": "Validation error", "field": exc.field, "detail": exc.message}, status=400)
+        except KeyError as exc:
+            _json_response(self, {"error": "Unknown incident", "detail": str(exc)}, status=404)
 
     def log_message(self, format: str, *args: object) -> None:
         return

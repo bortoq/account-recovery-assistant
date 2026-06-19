@@ -1,14 +1,15 @@
 import json
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
 
 def default_playbooks_path() -> Path:
-    return Path(__file__).resolve().parents[2] / "data" / "recovery_playbooks.json"
+    return Path(str(files("account_recovery_assistant.data").joinpath("recovery_playbooks.json")))
 
 
 def default_service_priorities_path() -> Path:
-    return Path(__file__).resolve().parents[2] / "data" / "service_priorities.json"
+    return Path(str(files("account_recovery_assistant.data").joinpath("service_priorities.json")))
 
 
 def load_playbooks(path: str | Path | None = None) -> dict[str, Any]:
