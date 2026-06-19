@@ -25,7 +25,7 @@ A local CLI and web wizard that turns a confusing account recovery situation int
 ```bash
 git clone https://github.com/bortoq/account-recovery-assistant.git
 cd account-recovery-assistant
-pip install --no-build-isolation .
+python -m pip install .
 ```
 
 ### CLI
@@ -84,6 +84,9 @@ PYTHONPATH=src python3 -m pytest -v
 
 # Build package
 python3 -m build --no-isolation
+
+# Check official links in the knowledge base
+python3 scripts/check_links.py
 ```
 
 Project structure:
@@ -105,7 +108,7 @@ Project structure:
 
 ## Roadmap & Docs
 
-- [docs/roadmap.md](docs/roadmap.md) — full plan and status
+- [roadmap.md](roadmap.md) — full plan and status
 - [docs/current-usage.md](docs/current-usage.md) — detailed usage
 - [docs/releasing.md](docs/releasing.md) — build & publish guide
 - [CHANGELOG.md](CHANGELOG.md) — release history

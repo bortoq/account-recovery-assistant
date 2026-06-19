@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,6 +7,8 @@ name = "account-recovery-assistant"
 version = "0.1.0"
 description = "Safety-first account recovery guidance through official channels."
 readme = "README.md"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 keywords = ["account-recovery", "security", "privacy", "mfa", "2fa", "password-recovery"]
 classifiers = [
@@ -14,7 +16,6 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Information Technology",
-    "License :: Other/Proprietary License",  # SPDX: LicenseRef-Proprietary — see LICENSE,
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Topic :: Security",

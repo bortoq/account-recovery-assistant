@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 
 SRC_DIR = os.path.join(os.path.dirname(__file__), "..", "src")
@@ -110,3 +111,23 @@ def test_cli_examples_cover_meta_and_microsoft_branches():
 
         plan = json.loads(result.stdout)
         assert plan["decision_path_id"] == expected_branch, path
+
+
+def test_cli_all_example_files_are_valid_inputs():
+    for example_path in sorted(Path("examples").glob("*.json")):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "account_recovery_assistant",
+                str(example_path),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=_env_with_pythonpath(),
+        )
+
+        plan = json.loads(result.stdout)
+        assert plan["allowed"] is True, example_path
+        assert plan["next_best_action"], example_path

@@ -2,6 +2,7 @@
   "service": "Apple",
   "incident_id": "apple_trusted_device_loss",
   "lost_factor": "phone_number",
+  "still_knows_password": true,
   "has_trusted_device": false,
   "has_trusted_phone": false,
   "has_purchase_proof": true,

@@ -117,6 +117,95 @@ function listHtml(items, render = (item) => escapeHtml(item)) {
   return `<ul>${items.map((item) => `<li>${render(item)}</li>`).join("")}</ul>`;
 }
 
+function markdownList(items) {
+  return items.map((item) => `- ${item}`).join("\n");
+}
+
+function markdownLinks(items) {
+  return items.map((item) => `- [${item.label}](${item.url})`).join("\n");
+}
+
+function planToMarkdown(plan) {
+  return [
+    "# Account Recovery Plan",
+    "",
+    `Service: ${plan.service}`,
+    `Case type: ${plan.case_type}`,
+    `Incident: ${plan.incident_title || "General recovery case"}`,
+    "",
+    "## Next Best Action",
+    "",
+    plan.next_best_action,
+    "",
+    "## Prepare Now",
+    "",
+    markdownList(plan.prepare_now),
+    "",
+    "## What Can Make This Worse",
+    "",
+    markdownList(plan.what_can_make_this_worse),
+    "",
+    "## Escalate When",
+    "",
+    markdownList(plan.escalate_when),
+    "",
+    `Expected timeline: ${plan.expected_timeline}`,
+    "",
+    "## Checklist",
+    "",
+    markdownList(plan.checklist),
+    "",
+    "## Evidence To Prepare",
+    "",
+    markdownList(plan.evidence),
+    "",
+    "## Official Links",
+    "",
+    markdownLinks(plan.official_links),
+    "",
+    "## Support Message",
+    "",
+    plan.support_message,
+    "",
+    "## Post-Recovery Hardening",
+    "",
+    markdownList(plan.hardening_steps),
+    "",
+    "## Safety Warnings",
+    "",
+    markdownList(plan.safety_warnings),
+    "",
+  ].join("\n");
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  document.execCommand("copy");
+  textArea.remove();
+}
+
 function renderPlan(plan) {
   const warning =
     plan.knowledge_base && plan.knowledge_base.status !== "verified"
@@ -198,11 +287,20 @@ function renderPlan(plan) {
         ${listHtml(plan.safety_warnings)}
       </section>
       <div class="actions">
+        <button type="button" id="copy-support-message">Copy Support Message</button>
+        <button type="button" id="download-markdown">Download Markdown</button>
         <button type="button" class="secondary" id="start-over">Start Over</button>
       </div>
     </section>
   `;
 
+  wizardNode.querySelector("#copy-support-message").addEventListener("click", async () => {
+    await copyText(plan.support_message);
+    statusNode.textContent = "Support message copied.";
+  });
+  wizardNode.querySelector("#download-markdown").addEventListener("click", () => {
+    downloadText("account-recovery-plan.md", planToMarkdown(plan));
+  });
   wizardNode.querySelector("#start-over").addEventListener("click", init);
 }
 

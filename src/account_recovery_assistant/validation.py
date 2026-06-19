@@ -22,8 +22,10 @@ def validate_situation(situation: dict[str, Any]) -> dict[str, Any]:
     role = situation.get("role")
     if not role:
         raise ValidationError("role", "Missing required field.")
-    if str(role) not in ALLOWED_ROLES:
+    normalized_role = str(role).lower()
+    if normalized_role not in ALLOWED_ROLES:
         raise ValidationError("role", "Unsupported role value.")
+    situation["role"] = normalized_role
 
     incident_id = situation.get("incident_id")
     if incident_id:
